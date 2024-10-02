@@ -1,8 +1,7 @@
 library firebase_local_config;
 
-import 'package:firebase_local_config/source/config_source.dart';
+import 'package:firebase_local_config/source/local_config_source.dart';
 import 'package:firebase_local_config/source/shared_preferences_config_source.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseLocalConfig {
@@ -10,52 +9,58 @@ class FirebaseLocalConfig {
 
   static final instance = FirebaseLocalConfig._();
 
-  final ConfigSource _localConfig = SharedPreferencesConfigSource();
+  final LocalConfigSource _source = SharedPreferencesConfigSource();
 
-  Map<String, String> _values = {};
+  Map<String, String> _configs = {};
 
-  Future<void> initialize(Map<String, RemoteConfigValue> values) async {
-    await _localConfig.initialize();
-
-    _values = values.map((key, value) {
-      return MapEntry(key, value.asString());
-    });
+  Future<void> setConfigs(Map<String, String> configs) async {
+    _configs = configs;
   }
 
-  bool? getBool(String key) {
-    return _localConfig.getBool(key);
+  Future<bool?> getBool(String key) async {
+    final config = await _source.getConfig(key);
+    if (config == null) return null;
+
+    return bool.tryParse(config);
   }
 
-  int? getInt(String key) {
-    return _localConfig.getInt(key);
+  Future<int?> getInt(String key) async {
+    final config = await _source.getConfig(key);
+    if (config == null) return null;
+
+    return int.tryParse(config);
   }
 
-  double? getDouble(String key) {
-    return _localConfig.getDouble(key);
+  Future<double?> getDouble(String key) async {
+    final config = await _source.getConfig(key);
+    if (config == null) return null;
+
+    return double.tryParse(config);
   }
 
-  String? getString(String key) {
-    return _localConfig.getString(key);
+  Future<String?> getString(String key) async {
+    return await _source.getConfig(key);
   }
 
   Future<void> setBool(String key, bool value) async {
-    await _localConfig.setBool(key, value);
+    await _source.setConfig(key, value.toString());
   }
 
   Future<void> setInt(String key, int value) async {
-    await _localConfig.setInt(key, value);
+    await _source.setConfig(key, value.toString());
   }
 
   Future<void> setDouble(String key, double value) async {
-    await _localConfig.setDouble(key, value);
+    await _source.setConfig(key, value.toString());
   }
 
   Future<void> setString(String key, String value) async {
-    await _localConfig.setString(key, value);
+    await _source.setConfig(key, value.toString());
   }
 
-  Widget getLocalConfigScreen() {
-    final localConfigs = _values.entries.toList();
+  Widget getSettingsScreen() {
+    final localConfigs = _configs.entries.toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Firebase Local Config'),

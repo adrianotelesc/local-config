@@ -12,8 +12,9 @@ void main() async {
   );
   await FirebaseRemoteConfig.instance.fetchAndActivate();
 
-  FirebaseLocalConfig.instance
-      .initialize(FirebaseRemoteConfig.instance.getAll());
+  FirebaseLocalConfig.instance.setConfigs(FirebaseRemoteConfig.instance
+      .getAll()
+      .map((key, value) => MapEntry(key, value.asString())));
 
   runApp(const MyApp());
 }
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: FirebaseLocalConfig.instance.getLocalConfigScreen(),
+      home: FirebaseLocalConfig.instance.getSettingsScreen(),
     );
   }
 }
