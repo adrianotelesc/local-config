@@ -42,10 +42,10 @@ class _ToggleConfigWidgetState extends State<ToggleConfigWidget> {
     );
   }
 
-  void onChanged(bool value) {
+  void onChanged(bool value) async {
     setState(() {
       this.value = value;
     });
-    LocalConfig.instance.setBool(widget.configKey, value);
+    await LocalConfig.instance.setBool(widget.configKey, value);
   }
 }
