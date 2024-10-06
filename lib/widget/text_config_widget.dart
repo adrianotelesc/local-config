@@ -1,3 +1,4 @@
+import 'package:firebase_local_config/local_config.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
@@ -17,11 +18,13 @@ class TextConfigWidget extends StatefulWidget {
 
 class _TextConfigWidgetState extends State<TextConfigWidget> {
   String value = RemoteConfigValue.defaultValueForString;
+  final controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     value = widget.configValue;
+    controller.text = value;
   }
 
   @override
@@ -32,15 +35,31 @@ class _TextConfigWidgetState extends State<TextConfigWidget> {
         leading: isNumeric(value)
             ? const Icon(Icons.onetwothree)
             : const Icon(Icons.abc),
-        trailing: Text(widget.configValue),
+        trailing: Text(value),
       ),
       onTap: () {
-        showAdaptiveDialog(
+        showDialog(
           context: context,
           builder: (context) {
-            return const Column(
-              children: [
-                TextField(),
+            return AlertDialog(
+              title: Text(widget.configKey),
+              content: TextField(
+                controller: controller,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    onChanged(controller.text);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
               ],
             );
           },
@@ -55,5 +74,6 @@ class _TextConfigWidgetState extends State<TextConfigWidget> {
     setState(() {
       this.value = value;
     });
+    LocalConfig.instance.setString(widget.configKey, value);
   }
 }
