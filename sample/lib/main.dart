@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_local_config/local_config.dart';
+import 'package:firebase_local_config/model/config_value.dart';
 import 'package:firebase_local_config_sample/firebase_options.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +13,28 @@ void main() async {
   );
   await FirebaseRemoteConfig.instance.fetchAndActivate();
 
-  final configs = FirebaseRemoteConfig.instance
-      .getAll()
-      .map((key, value) => MapEntry(key, value.asString()));
+  final configs = <String, ConfigValue>{
+    'config_bool': const ConfigValue(
+      value: 'true',
+      valueType: ConfigValueType.bool,
+    ),
+    'config_int': const ConfigValue(
+      value: '0',
+      valueType: ConfigValueType.int,
+    ),
+    'config_double': const ConfigValue(
+      value: '0.0',
+      valueType: ConfigValueType.double,
+    ),
+    'config_string': const ConfigValue(
+      value: '',
+      valueType: ConfigValueType.string,
+    ),
+    'config_json': const ConfigValue(
+      value: '{}',
+      valueType: ConfigValueType.json,
+    ),
+  };
   LocalConfig.instance.initialize(configs: configs);
 
   runApp(const MyApp());

@@ -1,5 +1,6 @@
 library firebase_local_config;
 
+import 'package:firebase_local_config/model/config_value.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_local_config/preferences/preferences_delegate.dart';
 import 'package:firebase_local_config/preferences/shared_preferences_delegate.dart';
@@ -12,14 +13,14 @@ class LocalConfig {
 
   final PreferencesDelegate _preferencesDelegate = SharedPreferencesDelegate();
 
-  final Map<String, String> _configs = {};
+  final Map<String, ConfigValue> _configs = {};
 
-  final Map<String, String> _configsInPreferences = {};
+  final Map<String, dynamic> _configsInPreferences = {};
 
-  Future<void> initialize({required Map<String, String> configs}) async {
+  Future<void> initialize({required Map<String, ConfigValue> configs}) async {
     _configs.addAll(configs);
 
-    final configsInPreferences = await _preferencesDelegate.getAll();
+    var configsInPreferences = await _preferencesDelegate.getAll();
     for (final key in configsInPreferences.keys) {
       if (!_configs.containsKey(key)) {
         await _preferencesDelegate.removePreference(key);
@@ -69,8 +70,13 @@ class LocalConfig {
   }
 
   Widget getLocalConfigsScreen() {
-    _configs.addAll(_configsInPreferences);
-    final configs = _configs.entries.toList();
-    return LocalConfigScreen(configs: configs);
+    final configs = <String, ConfigValue>{..._configs};
+    for (final config in _configsInPreferences.entries) {
+      configs[config.key] = ConfigValue(
+        value: config.value.toString(),
+        valueType: configs[config.key]!.valueType,
+      );
+    }
+    return LocalConfigScreen(configs: configs.entries.toList());
   }
 }

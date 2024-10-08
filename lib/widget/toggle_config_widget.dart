@@ -1,4 +1,5 @@
 import 'package:firebase_local_config/local_config.dart';
+import 'package:firebase_local_config/model/config_value.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,7 @@ class ToggleConfigWidget extends StatefulWidget {
   });
 
   final String configKey;
-  final bool configValue;
+  final ConfigValue configValue;
 
   @override
   State<StatefulWidget> createState() => _ToggleConfigWidgetState();
@@ -22,7 +23,7 @@ class _ToggleConfigWidgetState extends State<ToggleConfigWidget> {
   @override
   void initState() {
     super.initState();
-    value = widget.configValue;
+    value = bool.tryParse(widget.configValue.value) ?? false;
   }
 
   @override

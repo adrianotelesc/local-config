@@ -1,5 +1,5 @@
 import 'package:firebase_local_config/local_config.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:firebase_local_config/model/config_value.dart';
 import 'package:flutter/material.dart';
 
 class TextConfigWidget extends StatefulWidget {
@@ -10,21 +10,23 @@ class TextConfigWidget extends StatefulWidget {
   });
 
   final String configKey;
-  final String configValue;
+  final ConfigValue configValue;
 
   @override
   State<StatefulWidget> createState() => _TextConfigWidgetState();
 }
 
 class _TextConfigWidgetState extends State<TextConfigWidget> {
-  String value = RemoteConfigValue.defaultValueForString;
+  final _formKey = GlobalKey<FormState>();
   final controller = TextEditingController();
+
+  String configValue = '';
 
   @override
   void initState() {
     super.initState();
-    value = widget.configValue;
-    controller.text = value;
+    configValue = widget.configValue.value;
+    controller.text = configValue;
   }
 
   @override
@@ -32,10 +34,11 @@ class _TextConfigWidgetState extends State<TextConfigWidget> {
     return InkWell(
       child: ListTile(
         title: Text(widget.configKey),
-        leading: isNumeric(value)
+        leading: widget.configValue.valueType == ConfigValueType.int ||
+                widget.configValue.valueType == ConfigValueType.double
             ? const Icon(Icons.onetwothree)
             : const Icon(Icons.abc),
-        trailing: Text(value),
+        trailing: Text(configValue.toString()),
       ),
       onTap: () {
         showDialog(
@@ -43,18 +46,40 @@ class _TextConfigWidgetState extends State<TextConfigWidget> {
           builder: (context) {
             return AlertDialog(
               title: Text(widget.configKey),
-              content: TextField(
-                controller: controller,
+              content: Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: controller,
+                  autovalidateMode: AutovalidateMode.always,
+                  validator: (textValue) {
+                    if (widget.configValue.valueType == ConfigValueType.int &&
+                        textValue != null &&
+                        int.tryParse(textValue) == null) {
+                      return 'int bruh';
+                    }
+
+                    if (widget.configValue.valueType ==
+                            ConfigValueType.double &&
+                        textValue != null &&
+                        double.tryParse(textValue) == null) {
+                      return 'double bruh';
+                    }
+
+                    return null;
+                  },
+                ),
               ),
               actions: [
                 TextButton(
                   onPressed: () {
+                    controller.text = configValue;
                     Navigator.of(context).pop();
                   },
                   child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
+                    if (!(_formKey.currentState?.validate() ?? false)) return;
                     onChanged(controller.text);
                     Navigator.of(context).pop();
                   },
@@ -68,12 +93,16 @@ class _TextConfigWidgetState extends State<TextConfigWidget> {
     );
   }
 
-  bool isNumeric(String source) => double.tryParse(source) != null;
-
   void onChanged(String value) {
     setState(() {
-      this.value = value;
+      configValue = value;
     });
     LocalConfig.instance.setString(widget.configKey, value);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
   }
 }

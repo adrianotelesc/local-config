@@ -1,3 +1,4 @@
+import 'package:firebase_local_config/model/config_value.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ class DataObjectConfigWidget extends StatefulWidget {
   });
 
   final String configKey;
-  final String configValue;
+  final ConfigValue configValue;
 
   @override
   State<StatefulWidget> createState() => _DataObjectConfigWidgetState();
@@ -21,7 +22,7 @@ class _DataObjectConfigWidgetState extends State<DataObjectConfigWidget> {
   @override
   void initState() {
     super.initState();
-    value = widget.configValue;
+    value = widget.configValue.value;
   }
 
   @override
@@ -30,7 +31,7 @@ class _DataObjectConfigWidgetState extends State<DataObjectConfigWidget> {
       child: ListTile(
         title: Text(widget.configKey),
         leading: const Icon(Icons.data_object),
-        trailing: Text(widget.configValue),
+        trailing: Text(widget.configValue.value),
       ),
       onTap: () {
         showAdaptiveDialog(
