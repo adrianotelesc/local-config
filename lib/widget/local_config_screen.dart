@@ -16,9 +16,36 @@ class LocalConfigScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Local Config')),
-      body: ListView.builder(
-        itemCount: configs.length,
+      body: ListView.separated(
+        itemCount: configs.length + 1,
+        separatorBuilder: (context, index) {
+          return const Divider(height: 1);
+        },
         itemBuilder: (context, index) {
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(
+                top: 8,
+                left: 16,
+                right: 24,
+                bottom: 8,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Name',
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  Text(
+                    'Value',
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ],
+              ),
+            );
+          }
+          index = index -= 1;
           final configEntry = configs[index];
 
           switch (configEntry.value.valueType) {
