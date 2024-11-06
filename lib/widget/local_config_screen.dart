@@ -119,7 +119,7 @@ class LocalConfigScreen extends StatelessWidget {
                                                 ConfigValueType.string
                                             ? 'String'
                                             : 'JSON',
-                                    value: configEntry.value.value,
+                                    initialValue: configEntry.value.value,
                                     onChanged: (value) {
                                       textController.text = value;
                                     },

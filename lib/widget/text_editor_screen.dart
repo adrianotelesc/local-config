@@ -8,13 +8,13 @@ import 'package:re_highlight/styles/atom-one-dark.dart';
 class TextEditorScreen extends StatefulWidget {
   const TextEditorScreen({
     super.key,
-    required this.value,
+    required this.initialValue,
     required this.valueTypeName,
     this.onChanged,
   });
 
   final String valueTypeName;
-  final String value;
+  final String initialValue;
   final Function(String value)? onChanged;
 
   @override
@@ -22,27 +22,17 @@ class TextEditorScreen extends StatefulWidget {
 }
 
 class _TextEditorScreenState extends State<TextEditorScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _textController = CodeLineEditingController();
-  int maxCharsPerLine = 0;
-  double textFieldWidth = 300.0;
-
-  String _value = '';
-  List<int> numLines = [];
-  final textStyle = const TextStyle(fontSize: 16.0);
+  final _controller = CodeLineEditingController();
 
   @override
   void initState() {
     super.initState();
-    _value = widget.value;
-    try {
-      _textController.text = prettify(jsonDecode(_value));
-    } on FormatException catch (_) {}
+    _controller.text = jsonPrettify(widget.initialValue);
   }
 
   @override
   void dispose() {
-    _textController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -88,14 +78,16 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
                 ),
                 const Spacer(),
                 TextButton(
-                    onPressed: () {
-                      _textController.text = prettify(jsonDecode(_value));
-                    },
-                    style: const ButtonStyle(
-                      foregroundColor:
-                          WidgetStatePropertyAll(Colors.greenAccent),
+                  onPressed: () {
+                    _controller.text = jsonPrettify(_controller.text);
+                  },
+                  style: const ButtonStyle(
+                    foregroundColor: WidgetStatePropertyAll(
+                      Colors.greenAccent,
                     ),
-                    child: const Text('Format'))
+                  ),
+                  child: const Text('Format'),
+                )
               ],
             ),
           ),
@@ -103,7 +95,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
             child: CodeEditor(
               shortcutsActivatorsBuilder:
                   const DefaultCodeShortcutsActivatorsBuilder(),
-              controller: _textController,
+              controller: _controller,
               indicatorBuilder:
                   (context, editingController, chunkController, notifier) {
                 return Row(
@@ -134,17 +126,27 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
   }
 
   void onChanged() {
-    widget.onChanged?.call(unprettify(jsonDecode(_textController.text)));
+    widget.onChanged?.call(jsonMinify(_controller.text));
   }
 
-  String prettify(dynamic json) {
-    var spaces = ' ' * 4;
-    var encoder = JsonEncoder.withIndent(spaces);
-    return encoder.convert(json);
+  String jsonPrettify(String jsonString) {
+    try {
+      final json = jsonDecode(jsonString);
+      final spaces = ' ' * 4;
+      final encoder = JsonEncoder.withIndent(spaces);
+      return encoder.convert(json);
+    } on FormatException catch (_) {
+      return jsonString;
+    }
   }
 
-  String unprettify(dynamic json) {
-    var encoder = const JsonEncoder();
-    return encoder.convert(json);
+  String jsonMinify(String jsonString) {
+    try {
+      final json = jsonDecode(jsonString);
+      var encoder = const JsonEncoder();
+      return encoder.convert(json);
+    } on FormatException catch (_) {
+      return jsonString;
+    }
   }
 }
