@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:firebase_local_config/text/styleable_text_editing_controller.dart';
 import 'package:firebase_local_config/text/tab_shortcut.dart';
 import 'package:firebase_local_config/text/text_part_style_definition.dart';
@@ -38,9 +39,12 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
       )
     ],
   ));
+  int maxCharsPerLine = 0;
+  double textFieldWidth = 300.0;
 
   String _value = '';
-  int numLines = 1;
+  List<int> numLines = [];
+  final textStyle = const TextStyle(fontSize: 16.0);
 
   @override
   void initState() {
@@ -48,8 +52,15 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
     _value = widget.value;
     try {
       _textController.text = prettify(jsonDecode(_value));
-      numLines = '\n'.allMatches(_textController.text).length + 1;
     } on FormatException catch (_) {}
+    _textController.addListener(_calculateMaxCharacters);
+  }
+
+  @override
+  void dispose() {
+    _textController.removeListener(_calculateMaxCharacters);
+    _textController.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,57 +79,97 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
                   InsertTabIntent(2, _textController)
             },
             child: SingleChildScrollView(
-                child: IntrinsicHeight(
-                    child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children:
-                        List<int>.generate(numLines, (i) => i + 1).map((value) {
-                      return Text(
-                        value.toString(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(height: 1.7),
-                      );
-                    }).toList(),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: numLines.mapIndexed((index, value) {
+                        final buffer = StringBuffer();
+                        buffer.write(index + 1);
+                        for (int i = 1; i < value; i++) {
+                          buffer.writeln();
+                        }
+                        return Text(
+                          buffer.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(height: 1.7),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-                const VerticalDivider(),
-                Expanded(
-                  child: TextFormField(
-                    maxLines: null,
-                    decoration: const InputDecoration(border: InputBorder.none),
-                    controller: _textController,
-                    autovalidateMode: AutovalidateMode.always,
-                    onChanged: (value) {
-                      setState(() {
-                        numLines = '\n'.allMatches(value).length + 1;
-                      });
-                    },
-                    validator: (value) {
-                      try {
-                        prettify(jsonDecode(_textController.text));
-                      } on FormatException catch (_) {
-                        return 'Invalid JSON.';
-                      }
+                  const VerticalDivider(),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        // Save the width of the TextFormField from the constraints
+                        textFieldWidth = constraints.maxWidth;
 
-                      return null;
-                    },
+                        return TextFormField(
+                          maxLines: null,
+                          style: textStyle,
+                          decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(vertical: 8),
+                              border: InputBorder.none),
+                          controller: _textController,
+                          autovalidateMode: AutovalidateMode.always,
+                          validator: (value) {
+                            try {
+                              prettify(jsonDecode(_textController.text));
+                            } on FormatException catch (_) {
+                              return 'Invalid JSON.';
+                            }
+                            return null;
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ))),
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  List<double> _calculateLineWidths(String text, BuildContext context) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: textStyle),
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+
+    textPainter.layout(maxWidth: MediaQuery.sizeOf(context).width);
+
+    List<double> lineWidths = [];
+    final lineCount = textPainter.computeLineMetrics().length;
+    for (int i = 0; i < lineCount; i++) {
+      final line = textPainter.computeLineMetrics()[i];
+      lineWidths.add(line.width);
+    }
+    return lineWidths;
+  }
+
+  void _calculateMaxCharacters() {
+    final lineWidths = _calculateLineWidths(_textController.text, context);
+
+    setState(() {
+      numLines = lineWidths.map<int>(
+        (width) {
+          return width <= textFieldWidth ? 1 : (width / textFieldWidth).ceil();
+        },
+      ).toList();
+    });
+    print(lineWidths);
+    print(numLines);
   }
 
   String prettify(dynamic json) {
