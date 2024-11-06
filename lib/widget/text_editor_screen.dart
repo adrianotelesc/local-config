@@ -11,9 +11,11 @@ class TextEditorScreen extends StatefulWidget {
   const TextEditorScreen({
     super.key,
     required this.value,
+    required this.valueTypeName,
     this.onChanged,
   });
 
+  final String valueTypeName;
   final String value;
   final Function(String value)? onChanged;
 
@@ -52,7 +54,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('String editor'),
+        title: Text('${widget.valueTypeName} editor'),
       ),
       body: Form(
         key: _formKey,

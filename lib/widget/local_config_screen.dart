@@ -111,6 +111,11 @@ class LocalConfigScreen extends StatelessWidget {
                             MaterialPageRoute<Null>(
                                 builder: (BuildContext context) {
                                   return TextEditorScreen(
+                                    valueTypeName:
+                                        configEntry.value.valueType ==
+                                                ConfigValueType.string
+                                            ? 'String'
+                                            : 'JSON',
                                     value: configEntry.value.value,
                                   );
                                 },
