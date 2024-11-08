@@ -35,20 +35,10 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
         child: CustomScrollView(
           controller: _scrollController,
           slivers: [
-            const SliverAppBar(
-              title: Text('Local Config'),
-              centerTitle: false,
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SliverHeaderDelegate(
-                minHeight: 80,
-                maxHeight: 80,
-                child: _ConfigSearchBar(onChanged: _onSearchTextChanged),
-              ),
-            ),
+            const _AppBar(),
+            _SearchBar(onChanged: _onSearchTextChanged),
             if (_configs.isEmpty)
-              const _ConfigEmptyList()
+              const _EmptyConfigList()
             else
               _ConfigList(configs: _configs)
           ],
@@ -82,6 +72,88 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
   }
 }
 
+class _AppBar extends StatelessWidget {
+  const _AppBar();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SliverAppBar(
+      title: Text('Local Config'),
+      centerTitle: false,
+    );
+  }
+}
+
+class _SearchBar extends StatefulWidget {
+  const _SearchBar({this.onChanged});
+
+  final void Function(String)? onChanged;
+
+  @override
+  State<StatefulWidget> createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<_SearchBar> {
+  final _textController = TextEditingController();
+
+  bool isCloseVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _textController.addListener(_onChanged);
+  }
+
+  void _onChanged() {
+    final searchText = _textController.text;
+    widget.onChanged?.call(searchText);
+    setState(() => isCloseVisible = searchText.isNotEmpty);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: _SliverHeaderDelegate(
+        minHeight: 80,
+        maxHeight: 80,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 16,
+          ),
+          child: Wrap(
+            runAlignment: WrapAlignment.center,
+            children: [
+              SearchBar(
+                padding:
+                    const WidgetStatePropertyAll(EdgeInsets.only(left: 16)),
+                hintText: 'Search',
+                leading: const Icon(Icons.search),
+                controller: _textController,
+                trailing: [
+                  if (isCloseVisible)
+                    IconButton(
+                      onPressed: () => _textController.clear(),
+                      icon: const Icon(Icons.close),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _textController.removeListener(_onChanged);
+    _textController.dispose();
+    super.dispose();
+  }
+}
+
 class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   _SliverHeaderDelegate({
     required this.minHeight,
@@ -111,8 +183,8 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-class _ConfigEmptyList extends StatelessWidget {
-  const _ConfigEmptyList();
+class _EmptyConfigList extends StatelessWidget {
+  const _EmptyConfigList();
 
   @override
   Widget build(BuildContext context) {
@@ -156,68 +228,6 @@ class _ConfigList extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-class _ConfigSearchBar extends StatefulWidget {
-  const _ConfigSearchBar({this.onChanged});
-
-  final void Function(String)? onChanged;
-
-  @override
-  State<StatefulWidget> createState() => _ConfigSearchBarState();
-}
-
-class _ConfigSearchBarState extends State<_ConfigSearchBar> {
-  final _textController = TextEditingController();
-
-  bool isCloseVisible = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _textController.addListener(_onChanged);
-  }
-
-  void _onChanged() {
-    final searchText = _textController.text;
-    widget.onChanged?.call(searchText);
-    setState(() => isCloseVisible = searchText.isNotEmpty);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
-        horizontal: 16,
-      ),
-      child: Wrap(
-        runAlignment: WrapAlignment.center,
-        children: [
-          SearchBar(
-            padding: const WidgetStatePropertyAll(EdgeInsets.only(left: 16)),
-            hintText: 'Search',
-            leading: const Icon(Icons.search),
-            controller: _textController,
-            trailing: [
-              if (isCloseVisible)
-                IconButton(
-                  onPressed: () => _textController.clear(),
-                  icon: const Icon(Icons.close),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _textController.removeListener(_onChanged);
-    _textController.dispose();
-    super.dispose();
   }
 }
 
