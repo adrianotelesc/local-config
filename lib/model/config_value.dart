@@ -1,28 +1,24 @@
-enum ConfigValueType {
-  bool,
-  int,
-  double,
-  string,
-  json;
-}
-
 class ConfigValue {
-  final String value;
-  final ConfigValueType valueType;
+  final String raw;
+  final ConfigValueType type;
 
   const ConfigValue({
-    required this.value,
-    required this.valueType,
+    required this.raw,
+    required this.type,
   });
 
-  bool get isNumeric =>
-      valueType == ConfigValueType.int || valueType == ConfigValueType.double;
+  bool? get asBool => bool.tryParse(raw);
+  double? get asDouble => double.tryParse(raw);
+  int? get asInt => int.tryParse(raw);
+  String? get asString => raw;
+}
 
-  bool? asBool() => bool.tryParse(value);
+enum ConfigValueType {
+  boolType,
+  intType,
+  doubleType,
+  stringType,
+  jsonType;
 
-  double? asDouble() => double.tryParse(value);
-
-  int? asInt() => int.tryParse(value);
-
-  String? asString() => value;
+  bool get isText => [stringType, jsonType].contains(this);
 }

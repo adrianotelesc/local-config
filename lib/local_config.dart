@@ -73,8 +73,8 @@ class LocalConfig {
     final configs = <String, ConfigValue>{..._configs};
     for (final config in _configsInPreferences.entries) {
       configs[config.key] = ConfigValue(
-        value: config.value.toString(),
-        valueType: configs[config.key]!.valueType,
+        raw: config.value.toString(),
+        type: configs[config.key]!.type,
       );
     }
     return LocalConfigScreen(configs: configs.entries.toList());
