@@ -18,17 +18,17 @@ class TextEditorScreen extends StatefulWidget {
 }
 
 class _TextEditorScreenState extends State<TextEditorScreen> {
-  final _controller = CodeLineEditingController();
+  final _textController = CodeLineEditingController();
 
   @override
   void initState() {
     super.initState();
-    _controller.text = jsonPrettify(widget.initialValue);
+    _textController.text = jsonPrettify(widget.initialValue);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -37,11 +37,23 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Editor'),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.maybePop(
+              context,
+              widget.initialValue,
+            );
+          },
+          icon: const Icon(Icons.close),
+        ),
         actions: [
           IconButton(
             tooltip: 'Save',
             onPressed: () {
-              Navigator.maybePop(context, jsonMinify(_controller.text));
+              Navigator.maybePop(
+                context,
+                jsonMinify(_textController.text),
+              );
             },
             icon: const Icon(Icons.check),
           )
@@ -74,7 +86,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
                 const Spacer(),
                 TextButton(
                   onPressed: () {
-                    _controller.text = jsonPrettify(_controller.text);
+                    _textController.text = jsonPrettify(_textController.text);
                   },
                   style: const ButtonStyle(
                     foregroundColor: WidgetStatePropertyAll(
@@ -90,7 +102,7 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
             child: CodeEditor(
               shortcutsActivatorsBuilder:
                   const DefaultCodeShortcutsActivatorsBuilder(),
-              controller: _controller,
+              controller: _textController,
               indicatorBuilder:
                   (context, editingController, chunkController, notifier) {
                 return Row(

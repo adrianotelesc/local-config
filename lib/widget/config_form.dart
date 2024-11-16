@@ -55,7 +55,7 @@ class _ConfigFormState extends State<_ConfigForm> {
             _FormActions(
               formKey: _configFormKey,
               configName: widget.configName,
-              configValueController: _configValueController,
+              configValueTextController: _configValueController,
             ),
           ],
         ),
@@ -122,11 +122,11 @@ class _ConfigValueFormField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: hasPresetValues
           ? _ConfigValueDropdownButton(
-              configValueController: configValueController,
+              configValueTextController: configValueController,
               configValueType: configValue.type,
             )
           : _ConfigValueTextField(
-              configValueController: configValueController,
+              configValueTextController: configValueController,
               configValueType: configValue.type,
             ),
     );
@@ -135,11 +135,11 @@ class _ConfigValueFormField extends StatelessWidget {
 
 class _ConfigValueTextField extends StatelessWidget {
   const _ConfigValueTextField({
-    required this.configValueController,
+    required this.configValueTextController,
     required this.configValueType,
   });
 
-  final TextEditingController configValueController;
+  final TextEditingController configValueTextController;
   final ConfigValueType configValueType;
 
   @override
@@ -159,20 +159,20 @@ class _ConfigValueTextField extends StatelessWidget {
                       fullscreenDialog: true,
                       builder: (BuildContext context) {
                         return TextEditorScreen(
-                          initialValue: configValueController.text,
+                          initialValue: configValueTextController.text,
                         );
                       },
                     ),
                   );
                   if (!context.mounted) return;
-                  configValueController.text = newText ?? '';
+                  configValueTextController.text = newText ?? '';
                 },
                 icon: const Icon(Icons.open_in_full),
               )
             : null,
       ),
       autovalidateMode: AutovalidateMode.always,
-      controller: configValueController,
+      controller: configValueTextController,
       validator: configValueType.validator,
     );
   }
@@ -180,11 +180,11 @@ class _ConfigValueTextField extends StatelessWidget {
 
 class _ConfigValueDropdownButton extends StatelessWidget {
   const _ConfigValueDropdownButton({
-    required this.configValueController,
+    required this.configValueTextController,
     required this.configValueType,
   });
 
-  final TextEditingController configValueController;
+  final TextEditingController configValueTextController;
   final ConfigValueType configValueType;
 
   @override
@@ -205,9 +205,9 @@ class _ConfigValueDropdownButton extends StatelessWidget {
               child: Text(value),
             );
           }).toList(),
-          value: configValueController.text,
+          value: configValueTextController.text,
           validator: configValueType.validator,
-          onChanged: (value) => configValueController.text = value ?? '',
+          onChanged: (value) => configValueTextController.text = value ?? '',
         ),
       ),
     );
@@ -218,12 +218,12 @@ class _FormActions extends StatelessWidget {
   const _FormActions({
     required this.formKey,
     required this.configName,
-    required this.configValueController,
+    required this.configValueTextController,
   });
 
   final GlobalKey<FormState> formKey;
   final String configName;
-  final TextEditingController configValueController;
+  final TextEditingController configValueTextController;
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +242,7 @@ class _FormActions extends StatelessWidget {
             if (formKey.currentState?.validate() == false) return;
             LocalConfig.instance.setString(
               configName,
-              configValueController.text,
+              configValueTextController.text,
             );
             Navigator.of(context).pop();
           },
