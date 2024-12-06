@@ -1,4 +1,4 @@
-import 'package:firebase_local_config/preferences/preferences_delegate.dart';
+import 'package:local_config/preferences/preferences_delegate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesDelegate extends PreferencesDelegate {

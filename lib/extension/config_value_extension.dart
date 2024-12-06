@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:firebase_local_config/model/config_value.dart';
+import 'package:local_config/model/config_value.dart';
 
 extension ConfigValueTypeExtension on ConfigValueType {
   List<String> get presetValues {

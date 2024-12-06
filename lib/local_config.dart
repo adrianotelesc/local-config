@@ -1,12 +1,12 @@
-library firebase_local_config;
+library local_config;
 
 import 'dart:async';
 
-import 'package:firebase_local_config/model/config_value.dart';
+import 'package:local_config/model/config_value.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_local_config/preferences/preferences_delegate.dart';
-import 'package:firebase_local_config/preferences/shared_preferences_delegate.dart';
-import 'package:firebase_local_config/screen/local_config_screen.dart';
+import 'package:local_config/preferences/preferences_delegate.dart';
+import 'package:local_config/preferences/shared_preferences_delegate.dart';
+import 'package:local_config/screen/local_config_screen.dart';
 
 class LocalConfig {
   LocalConfig._();

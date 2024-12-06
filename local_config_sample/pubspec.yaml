@@ -1,5 +1,5 @@
-name: firebase_local_config_sample
-description: "A sample demonstrating the usage of the firebase_local_config package"
+name: local_config_sample
+description: "A sample demonstrating the usage of the local_config package"
 publish_to: 'none'
 
 environment:
@@ -8,7 +8,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_local_config:
+  local_config:
     path: ..
   firebase_core: ^3.6.0
   firebase_analytics: ^11.3.2

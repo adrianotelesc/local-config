@@ -5,21 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "sample",
-            "cwd": "sample",
+            "name": "local_config_sample",
+            "cwd": "local_config_sample",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "sample (profile mode)",
-            "cwd": "sample",
+            "name": "local_config_sample (profile mode)",
+            "cwd": "local_config_sample",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "sample (release mode)",
-            "cwd": "sample",
+            "name": "local_config_sample (release mode)",
+            "cwd": "local_config_sample",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
