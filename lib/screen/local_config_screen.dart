@@ -17,7 +17,7 @@ class LocalConfigScreen extends StatefulWidget {
 class _LocalConfigScreenState extends State<LocalConfigScreen> {
   final _scrollController = ScrollController();
 
-  String _searchQuery = '';
+  final _searchTextController = TextEditingController();
 
   List<MapEntry<String, ConfigValue>> _allConfigs = [];
   List<MapEntry<String, ConfigValue>> _visibleConfigs = [];
@@ -28,26 +28,17 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
   void initState() {
     super.initState();
     _configsStreamSubscription = _subscribeToConfigsStream();
-  }
-
-  @override
-  void dispose() {
-    _configsStreamSubscription?.cancel();
-    _configsStreamSubscription = null;
-    _scrollController.dispose();
-    super.dispose();
+    _searchTextController.addListener(_handleSearchTextChange);
   }
 
   StreamSubscription _subscribeToConfigsStream() {
-    return LocalConfig.instance.configsStream.listen((configs) {
-      _updateConfigsState(configs.entries.toList());
-    });
+    return LocalConfig.instance.configsStream.listen(_updateConfigsState);
   }
 
-  void _updateConfigsState(List<MapEntry<String, ConfigValue>> configs) {
+  void _updateConfigsState(Map<String, ConfigValue> allConfigs) {
     setState(() {
-      _allConfigs = configs;
-      _visibleConfigs = _filterConfigsBy(_searchQuery);
+      _allConfigs = allConfigs.entries.toList();
+      _visibleConfigs = _filterConfigsBy(_searchTextController.text);
     });
   }
 
@@ -67,6 +58,23 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
     return string.toLowerCase().contains(substring.toLowerCase());
   }
 
+  void _handleSearchTextChange() {
+    final searchText = _searchTextController.text;
+    _updateVisibleConfigsState(searchText);
+  }
+
+  void _updateVisibleConfigsState(String searchText) {
+    setState(() => _visibleConfigs = _filterConfigsBy(searchText));
+  }
+
+  @override
+  void dispose() {
+    _configsStreamSubscription?.cancel();
+    _configsStreamSubscription = null;
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,23 +83,12 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
           controller: _scrollController,
           slivers: [
             const _AppBar(),
-            _SearchBar(onChanged: _onSearchQueryChanged),
+            _SearchBar(controller: _searchTextController),
             _ConfigList(configs: _visibleConfigs)
           ],
         ),
       ),
     );
-  }
-
-  void _onSearchQueryChanged(String searchQuery) {
-    _updateSearchQueryState(searchQuery);
-  }
-
-  void _updateSearchQueryState(String searchQuery) {
-    setState(() {
-      _searchQuery = searchQuery;
-      _visibleConfigs = _filterConfigsBy(searchQuery);
-    });
   }
 }
 
@@ -108,29 +105,33 @@ class _AppBar extends StatelessWidget {
 }
 
 class _SearchBar extends StatefulWidget {
-  const _SearchBar({this.onChanged});
+  const _SearchBar({required this.controller});
 
-  final void Function(String)? onChanged;
+  final TextEditingController controller;
 
   @override
   State<StatefulWidget> createState() => _SearchBarState();
 }
 
 class _SearchBarState extends State<_SearchBar> {
-  final _textController = TextEditingController();
-
-  bool isCloseVisible = false;
+  bool _isClearVisible = false;
 
   @override
   void initState() {
     super.initState();
-    _textController.addListener(_onChanged);
+    widget.controller.addListener(_handleTextChange);
   }
 
-  void _onChanged() {
-    final searchText = _textController.text;
-    widget.onChanged?.call(searchText);
-    setState(() => isCloseVisible = searchText.isNotEmpty);
+  void _handleTextChange() {
+    final text = widget.controller.text;
+    setState(() => _isClearVisible = text.isNotEmpty);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_handleTextChange);
+    widget.controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -149,15 +150,16 @@ class _SearchBarState extends State<_SearchBar> {
             runAlignment: WrapAlignment.center,
             children: [
               SearchBar(
-                padding:
-                    const WidgetStatePropertyAll(EdgeInsets.only(left: 16)),
+                padding: const WidgetStatePropertyAll(
+                  EdgeInsets.only(left: 16),
+                ),
                 hintText: 'Search',
                 leading: const Icon(Icons.search),
-                controller: _textController,
+                controller: widget.controller,
                 trailing: [
-                  if (isCloseVisible)
+                  if (_isClearVisible)
                     IconButton(
-                      onPressed: () => _textController.clear(),
+                      onPressed: _clearSearch,
                       icon: const Icon(Icons.close),
                     ),
                 ],
@@ -169,11 +171,8 @@ class _SearchBarState extends State<_SearchBar> {
     );
   }
 
-  @override
-  void dispose() {
-    _textController.removeListener(_onChanged);
-    _textController.dispose();
-    super.dispose();
+  void _clearSearch() {
+    widget.controller.clear();
   }
 }
 
