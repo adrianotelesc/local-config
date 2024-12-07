@@ -17,22 +17,54 @@ class LocalConfigScreen extends StatefulWidget {
 class _LocalConfigScreenState extends State<LocalConfigScreen> {
   final _scrollController = ScrollController();
 
-  List<MapEntry<String, ConfigValue>> _configs = [];
-  List<MapEntry<String, ConfigValue>> _filteredConfigs = [];
-  String searchText = '';
+  String _searchQuery = '';
 
-  StreamSubscription? configsStreamSubscription;
+  List<MapEntry<String, ConfigValue>> _allConfigs = [];
+  List<MapEntry<String, ConfigValue>> _visibleConfigs = [];
+
+  StreamSubscription? _configsStreamSubscription;
 
   @override
   void initState() {
     super.initState();
-    configsStreamSubscription =
-        LocalConfig.instance.configsStream.listen((configs) {
-      setState(() {
-        _configs = configs.entries.toList();
-        _filteredConfigs = _filterConfigsBy(searchText);
-      });
+    _configsStreamSubscription = _subscribeToConfigsStream();
+  }
+
+  @override
+  void dispose() {
+    _configsStreamSubscription?.cancel();
+    _configsStreamSubscription = null;
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  StreamSubscription _subscribeToConfigsStream() {
+    return LocalConfig.instance.configsStream.listen((configs) {
+      _updateConfigsState(configs.entries.toList());
     });
+  }
+
+  void _updateConfigsState(List<MapEntry<String, ConfigValue>> configs) {
+    setState(() {
+      _allConfigs = configs;
+      _visibleConfigs = _filterConfigsBy(_searchQuery);
+    });
+  }
+
+  List<MapEntry<String, ConfigValue>> _filterConfigsBy(String text) {
+    return text.trim().isNotEmpty
+        ? _filterConfigsContaining(text)
+        : _allConfigs;
+  }
+
+  List<MapEntry<String, ConfigValue>> _filterConfigsContaining(String text) {
+    return _allConfigs
+        .where((config) => _caseInsensitiveContains(config.key, text))
+        .toList();
+  }
+
+  bool _caseInsensitiveContains(String string, String substring) {
+    return string.toLowerCase().contains(substring.toLowerCase());
   }
 
   @override
@@ -43,41 +75,23 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
           controller: _scrollController,
           slivers: [
             const _AppBar(),
-            _SearchBar(onChanged: _onSearchTextChanged),
-            _ConfigList(configs: _filteredConfigs)
+            _SearchBar(onChanged: _onSearchQueryChanged),
+            _ConfigList(configs: _visibleConfigs)
           ],
         ),
       ),
     );
   }
 
-  void _onSearchTextChanged(String searchText) {
+  void _onSearchQueryChanged(String searchQuery) {
+    _updateSearchQueryState(searchQuery);
+  }
+
+  void _updateSearchQueryState(String searchQuery) {
     setState(() {
-      this.searchText = searchText;
-      _filteredConfigs = _filterConfigsBy(searchText);
+      _searchQuery = searchQuery;
+      _visibleConfigs = _filterConfigsBy(searchQuery);
     });
-  }
-
-  List<MapEntry<String, ConfigValue>> _filterConfigsBy(String text) {
-    return text.isNotEmpty ? _filterConfigsContaining(text) : _configs;
-  }
-
-  List<MapEntry<String, ConfigValue>> _filterConfigsContaining(String text) {
-    return _configs
-        .where((config) => caseInsensitiveContains(config.key, text))
-        .toList();
-  }
-
-  bool caseInsensitiveContains(String string, String substring) {
-    return string.contains(RegExp(substring, caseSensitive: false));
-  }
-
-  @override
-  void dispose() {
-    configsStreamSubscription?.cancel();
-    configsStreamSubscription = null;
-    _scrollController.dispose();
-    super.dispose();
   }
 }
 
