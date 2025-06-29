@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:local_config/screen/text_editor_screen.dart';
 import 'package:local_config/extension/build_context_extension.dart';
 import 'package:local_config/extension/config_value_extension.dart';
-import 'package:local_config/model/config_value.dart';
+import 'package:local_config/model/config.dart';
 
 class _ConfigForm extends StatefulWidget {
   const _ConfigForm({
@@ -12,7 +12,7 @@ class _ConfigForm extends StatefulWidget {
   });
 
   final String configName;
-  final ConfigValue configValue;
+  final Config configValue;
 
   @override
   State<StatefulWidget> createState() => _ConfigFormState();
@@ -27,7 +27,7 @@ class _ConfigFormState extends State<_ConfigForm> {
   @override
   void initState() {
     super.initState();
-    _value = widget.configValue.asString;
+    _value = widget.configValue.value;
     _configValueController.text = _value;
   }
 
@@ -77,7 +77,7 @@ class _ConfigFormHeader extends StatelessWidget {
   });
 
   final String configName;
-  final ConfigValueType configValueType;
+  final ConfigType configValueType;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +95,7 @@ class _ConfigFormHeader extends StatelessWidget {
             Icon(configValueType.icon),
             const SizedBox.square(dimension: 4),
             Text(
-              configValueType.name,
+              configValueType.displayName,
               style: Theme.of(context).textTheme.bodyMedium,
             )
           ],
@@ -112,7 +112,7 @@ class _ConfigValueFormField extends StatelessWidget {
   });
 
   final TextEditingController configValueController;
-  final ConfigValue configValue;
+  final Config configValue;
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +140,7 @@ class _ConfigValueTextField extends StatelessWidget {
   });
 
   final TextEditingController configValueTextController;
-  final ConfigValueType configValueType;
+  final ConfigType configValueType;
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +186,7 @@ class _ConfigValueDropdownButton extends StatelessWidget {
   });
 
   final TextEditingController configValueTextController;
-  final ConfigValueType configValueType;
+  final ConfigType configValueType;
 
   @override
   Widget build(BuildContext context) {
@@ -257,7 +257,7 @@ class _FormActions extends StatelessWidget {
 void showConfigFormModal({
   required BuildContext context,
   required String name,
-  required ConfigValue value,
+  required Config value,
 }) {
   showModalBottomSheet(
     context: context,

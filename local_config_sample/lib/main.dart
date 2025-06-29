@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:local_config/local_config.dart';
-import 'package:local_config/model/config_value.dart';
+import 'package:local_config/model/config.dart';
 import 'package:local_config_sample/firebase_options.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +15,8 @@ void main() async {
   final configs = FirebaseRemoteConfig.instance.getAll().map((key, value) {
     return MapEntry(
       key,
-      ConfigValue(
-        value.asString(),
+      Config(
+        value: value.asString(),
       ),
     );
   });

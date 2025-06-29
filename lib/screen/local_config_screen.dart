@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:local_config/extension/config_value_extension.dart';
 import 'package:local_config/local_config.dart';
 import 'package:local_config/widget/config_form.dart';
-import 'package:local_config/model/config_value.dart';
+import 'package:local_config/model/config.dart';
 import 'package:local_config/widget/sliver_header_delegate.dart';
 
 class LocalConfigScreen extends StatefulWidget {
@@ -19,8 +19,8 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
 
   final _searchTextController = TextEditingController();
 
-  List<MapEntry<String, ConfigValue>> _allConfigs = [];
-  List<MapEntry<String, ConfigValue>> _visibleConfigs = [];
+  List<MapEntry<String, Config>> _allConfigs = [];
+  List<MapEntry<String, Config>> _visibleConfigs = [];
 
   StreamSubscription? _configsStreamSubscription;
 
@@ -35,20 +35,20 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
     return LocalConfig.instance.configsStream.listen(_updateConfigsState);
   }
 
-  void _updateConfigsState(Map<String, ConfigValue> allConfigs) {
+  void _updateConfigsState(Map<String, Config> allConfigs) {
     setState(() {
       _allConfigs = allConfigs.entries.toList();
       _visibleConfigs = _filterConfigsBy(_searchTextController.text);
     });
   }
 
-  List<MapEntry<String, ConfigValue>> _filterConfigsBy(String text) {
+  List<MapEntry<String, Config>> _filterConfigsBy(String text) {
     return text.trim().isNotEmpty
         ? _filterConfigsContaining(text)
         : _allConfigs;
   }
 
-  List<MapEntry<String, ConfigValue>> _filterConfigsContaining(String text) {
+  List<MapEntry<String, Config>> _filterConfigsContaining(String text) {
     return _allConfigs
         .where((config) => _caseInsensitiveContains(config.key, text))
         .toList();
@@ -179,7 +179,7 @@ class _SearchBarState extends State<_SearchBar> {
 class _ConfigList extends StatelessWidget {
   const _ConfigList({this.configs = const []});
 
-  final List<MapEntry<String, ConfigValue>> configs;
+  final List<MapEntry<String, Config>> configs;
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +235,7 @@ class _ConfigListTile extends StatelessWidget {
   });
 
   final String name;
-  final ConfigValue value;
+  final Config value;
 
   @override
   Widget build(BuildContext context) {

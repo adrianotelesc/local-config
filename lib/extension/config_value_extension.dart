@@ -1,76 +1,72 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:local_config/delegate/editor_delegate.dart';
 import 'package:local_config/delegate/json_editor_delegate.dart';
 import 'package:local_config/delegate/string_editor_delegate.dart';
-import 'package:local_config/model/config_value.dart';
+import 'package:local_config/extension/string_parsing.dart';
+import 'package:local_config/model/config.dart';
 
-extension ConfigValueTypeExtension on ConfigValueType {
+extension ConfigTypeExtension on ConfigType {
   List<String> get presetValues {
     switch (this) {
-      case ConfigValueType.boolean:
+      case ConfigType.boolean:
         return ['false', 'true'];
       default:
         return [];
     }
   }
 
-  String get name {
+  String get displayName {
     switch (this) {
-      case ConfigValueType.boolean:
+      case ConfigType.boolean:
         return 'bool';
-      case ConfigValueType.integer:
+      case ConfigType.integer:
         return 'int';
-      case ConfigValueType.decimal:
+      case ConfigType.decimal:
         return 'double';
-      case ConfigValueType.string:
+      case ConfigType.string:
         return 'String';
-      case ConfigValueType.json:
+      case ConfigType.json:
         return 'JSON';
     }
   }
 
   IconData get icon {
     switch (this) {
-      case ConfigValueType.boolean:
+      case ConfigType.boolean:
         return Icons.toggle_on;
-      case ConfigValueType.integer:
-      case ConfigValueType.decimal:
+      case ConfigType.integer:
+      case ConfigType.decimal:
         return Icons.onetwothree;
-      case ConfigValueType.string:
+      case ConfigType.string:
         return Icons.abc;
-      case ConfigValueType.json:
+      case ConfigType.json:
         return Icons.data_object;
     }
   }
 
   String? validator(String? value) {
-    value = value ?? '';
     switch (this) {
-      case ConfigValueType.boolean:
-        if (bool.tryParse(value) == null) {
+      case ConfigType.boolean:
+        if (value?.asBool == null) {
           return 'Invalid bolean';
         }
         break;
-      case ConfigValueType.integer:
-        if (int.tryParse(value) == null) {
+      case ConfigType.integer:
+        if (value?.asInt == null) {
           return 'Invalid int';
         }
         break;
-      case ConfigValueType.decimal:
-        if (double.tryParse(value) == null) {
+      case ConfigType.decimal:
+        if (value?.asDouble == null) {
           return 'Invalid double';
         }
         break;
-      case ConfigValueType.json:
-        try {
-          jsonDecode(value);
-        } on FormatException {
+      case ConfigType.json:
+        if (value?.asJson == null) {
           return 'Invalid JSON';
         }
         break;
-      case ConfigValueType.string:
+      case ConfigType.string:
         break;
     }
     return null;
@@ -78,7 +74,7 @@ extension ConfigValueTypeExtension on ConfigValueType {
 
   EditorDelegate get editorDelegate {
     switch (this) {
-      case ConfigValueType.json:
+      case ConfigType.json:
         return JsonEditorDelegate();
       default:
         return StringDelegate();
@@ -86,13 +82,13 @@ extension ConfigValueTypeExtension on ConfigValueType {
   }
 }
 
-extension ConfigValueExtension on ConfigValue {
+extension ConfigValueExtension on Config {
   String get displayText {
     switch (type) {
-      case ConfigValueType.string:
-        return asString.isNotEmpty ? asString : '(empty string)';
+      case ConfigType.string:
+        return value.isNotEmpty ? value : '(empty string)';
       default:
-        return asString;
+        return value;
     }
   }
 }

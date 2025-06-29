@@ -2,7 +2,7 @@ library local_config;
 
 import 'dart:async';
 
-import 'package:local_config/model/config_value.dart';
+import 'package:local_config/model/config.dart';
 import 'package:flutter/material.dart';
 import 'package:local_config/preferences/preferences_delegate.dart';
 import 'package:local_config/preferences/shared_preferences_delegate.dart';
@@ -15,10 +15,10 @@ class LocalConfig {
 
   final PreferencesDelegate _preferencesDelegate = SharedPreferencesDelegate();
 
-  final _configs = <String, ConfigValue>{};
-  final _configsStreamController = StreamController<Map<String, ConfigValue>>();
+  final _configs = <String, Config>{};
+  final _configsStreamController = StreamController<Map<String, Config>>();
 
-  Future<void> initialize({required Map<String, ConfigValue> configs}) async {
+  Future<void> initialize({required Map<String, Config> configs}) async {
     var configsInPreferences = await _preferencesDelegate.getAll();
     for (final key in configsInPreferences.keys) {
       if (!configs.containsKey(key)) {
@@ -27,8 +27,8 @@ class LocalConfig {
     }
 
     for (final config in configsInPreferences.entries) {
-      configs[config.key] = ConfigValue(
-        config.value.toString(),
+      configs[config.key] = Config(
+        value: config.value,
       );
     }
 
@@ -54,7 +54,7 @@ class LocalConfig {
     return double.tryParse(config);
   }
 
-  Future<String?> getString(String key) async => _configs[key]?.asString;
+  Future<String?> getString(String key) async => _configs[key]?.value;
 
   Future<void> setBool(String key, bool value) async {
     setString(key, value.toString());
@@ -70,13 +70,13 @@ class LocalConfig {
 
   Future<void> setString(String key, String value) async {
     if (!_configs.containsKey(key)) return;
-    _configs[key] = ConfigValue(value);
+    _configs[key] = Config(value: value);
     _configsStreamController.add(_configs);
     await _preferencesDelegate.setPreference(key, value);
   }
 
   Widget getLocalConfigsScreen() => const LocalConfigScreen();
 
-  Stream<Map<String, ConfigValue>> get configsStream =>
+  Stream<Map<String, Config>> get configsStream =>
       _configsStreamController.stream;
 }
