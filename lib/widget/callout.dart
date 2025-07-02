@@ -1,53 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:local_config/custom_colors.dart';
+
+enum _CalloutVariant { success, warning }
+
+class CalloutStyle {
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+  final Color? borderColor;
+  final int? cornerRadius;
+
+  CalloutStyle({
+    this.cornerRadius,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.borderColor,
+  });
+}
 
 class Callout extends StatelessWidget {
-  const Callout({
-    super.key,
-    this.isValid = false,
-    this.shape = BoxShape.rectangle,
-    required this.icon,
-    required this.text,
-    this.actionText = '',
-    this.onActionTap,
-  });
-
-  final bool isValid;
-  final BoxShape shape;
-  final IconData icon;
+  final _CalloutVariant _variant;
+  final CalloutStyle? style;
+  final IconData? icon;
   final String text;
-  final String actionText;
-  final Function()? onActionTap;
+  final Widget? action;
 
-  Color get primaryColor {
-    return isValid ? const Color(0XFF6DD58C) : const Color(0XFFFFB300);
-  }
+  const Callout.warning({
+    super.key,
+    this.style,
+    this.icon,
+    required this.text,
+    this.action,
+  }) : _variant = _CalloutVariant.warning;
 
-  Color get backgroundColor {
-    return isValid ? const Color(0X146DD58C) : const Color(0X14FFB300);
-  }
-
-  Color get borderColor {
-    return isValid ? const Color(0X4D6DD58C) : const Color(0X4DFFB300);
-  }
-
-  Color get actionColor {
-    return isValid ? const Color(0XFF6DD58C) : const Color(0X4DFFFFFF);
-  }
+  const Callout.success({
+    super.key,
+    this.style,
+    this.icon,
+    required this.text,
+    this.action,
+  }) : _variant = _CalloutVariant.success;
 
   @override
   Widget build(BuildContext context) {
+    final customColors = Theme.of(context).extension<CustomColors>();
+    final backgroundColor = _variant == _CalloutVariant.success
+        ? style?.backgroundColor ?? customColors!.successContainer
+        : style?.backgroundColor ?? customColors!.warningContainer;
+    final foregroundColor = _variant == _CalloutVariant.success
+        ? style?.foregroundColor ?? customColors!.success
+        : style?.foregroundColor ?? customColors!.warning;
+    final borderColor = _variant == _CalloutVariant.success
+        ? style?.borderColor ?? customColors!.onSuccessContainer
+        : style?.borderColor ?? customColors!.onWarningContainer;
+    final borderRadius = style?.cornerRadius ?? 0;
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+      padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
       decoration: BoxDecoration(
         border: Border.all(color: borderColor),
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(borderRadius.toDouble()),
       ),
       child: Row(
         children: [
           Icon(
             icon,
-            color: primaryColor,
+            color: foregroundColor,
           ),
           const SizedBox.square(
             dimension: 8,
@@ -57,20 +75,10 @@ class Callout extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                ?.copyWith(color: primaryColor),
+                ?.copyWith(color: foregroundColor),
           ),
           const Spacer(),
-          TextButton(
-            onPressed: onActionTap,
-            style: ButtonStyle(
-              foregroundColor: WidgetStatePropertyAll(
-                actionColor,
-              ),
-            ),
-            child: actionText.isNotEmpty
-                ? Text(actionText)
-                : const SizedBox.shrink(),
-          )
+          action ?? const SizedBox.shrink(),
         ],
       ),
     );

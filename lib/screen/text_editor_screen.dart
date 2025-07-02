@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:local_config/custom_colors.dart';
 import 'package:local_config/delegate/editor_delegate.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:re_highlight/languages/json.dart';
@@ -41,24 +42,51 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _AppBar(
-        title: widget.delegate.title,
-        onCloseClick: pop,
-        onSaveClick: _isValid ? popAndResult : null,
-      ),
-      body: Column(
-        children: [
-          if (widget.delegate.shouldValidate)
-            _FormattingBar(
-              isValid: _isValid,
-              onFormatClick: () {
-                _textController.text =
-                    widget.delegate.prettify(_textController.text);
-              },
+    return Theme(
+      data: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          brightness: Brightness.dark,
+          seedColor: Colors.deepPurple,
+        ),
+        useMaterial3: true,
+        searchBarTheme: SearchBarTheme.of(context).copyWith(
+          shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+          shape: const WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
-          _Editor(textController: _textController),
+          ),
+        ),
+        extensions: [
+          CustomColors(
+            warning: const Color(0XFFFFB300),
+            warningContainer: const Color(0X14FFB300),
+            onWarningContainer: const Color(0X4DFFB300),
+            success: const Color(0XFF6DD58C),
+            successContainer: const Color(0X146DD58C),
+            onSuccessContainer: const Color(0X4D6DD58C),
+          ),
         ],
+      ),
+      child: Scaffold(
+        appBar: _AppBar(
+          title: widget.delegate.title,
+          onCloseClick: pop,
+          onSaveClick: _isValid ? popAndResult : null,
+        ),
+        body: Column(
+          children: [
+            if (widget.delegate.shouldValidate)
+              _FormattingBar(
+                isValid: _isValid,
+                onFormatClick: () {
+                  _textController.text =
+                      widget.delegate.prettify(_textController.text);
+                },
+              ),
+            _Editor(textController: _textController),
+          ],
+        ),
       ),
     );
   }

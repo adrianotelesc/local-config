@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:local_config/custom_colors.dart';
 import 'package:local_config/extension/config_value_extension.dart';
 import 'package:local_config/local_config.dart';
 import 'package:local_config/widget/callout.dart';
@@ -80,20 +81,91 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            const _AppBar(),
-            _SearchBar(controller: _searchTextController),
-            _ConfigList(
-              localConfigs: _visibleConfigs,
-              configs: _configs,
-            )
-          ],
+    return Theme(
+      data: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          brightness: Brightness.dark,
+          seedColor: const Color(0xFF1A73E8),
+          primary: const Color(0XFF86ABF2),
+          onPrimary: const Color(0XFF0B1D46),
+          surface: const Color(0xFF121212),
         ),
+        useMaterial3: true,
+        searchBarTheme: SearchBarTheme.of(context).copyWith(
+          shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+          shape: const WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+          ),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+        ),
+        extensions: [
+          CustomColors(
+            warning: const Color(0XFFFFB300),
+            warningContainer: const Color(0X14FFB300),
+            onWarningContainer: const Color(0X4DFFB300),
+            success: const Color(0XFF6DD58C),
+            successContainer: const Color(0X146DD58C),
+            onSuccessContainer: const Color(0X4D6DD58C),
+          ),
+        ],
       ),
+      child: Builder(builder: (context) {
+        return Scaffold(
+          body: SafeArea(
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                const _AppBar(),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: SliverHeaderDelegate(
+                    minHeight: 59,
+                    maxHeight: 59,
+                    child: Stack(
+                      children: [
+                        Container(
+                          color: Colors.black,
+                        ),
+                        Callout.warning(
+                          icon: Icons.error,
+                          text: 'Configs changed locally',
+                          action: FilledButton(
+                            onPressed: () {},
+                            child: const Text('Reset All'),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: _SearchBar(controller: _searchTextController),
+                  ),
+                ),
+                _ConfigList(
+                  localConfigs: _visibleConfigs,
+                  configs: _configs,
+                )
+              ],
+            ),
+          ),
+        );
+      }),
     );
   }
 }
@@ -142,38 +214,20 @@ class _SearchBarState extends State<_SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverPersistentHeader(
-      pinned: true,
-      delegate: SliverHeaderDelegate(
-        minHeight: 80,
-        maxHeight: 80,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 16,
-          ),
-          child: Wrap(
-            runAlignment: WrapAlignment.center,
-            children: [
-              SearchBar(
-                padding: const WidgetStatePropertyAll(
-                  EdgeInsets.only(left: 16),
-                ),
-                hintText: 'Search',
-                leading: const Icon(Icons.search),
-                controller: widget.controller,
-                trailing: [
-                  if (_isClearVisible)
-                    IconButton(
-                      onPressed: _clearSearch,
-                      icon: const Icon(Icons.close),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ),
+    return SearchBar(
+      padding: const WidgetStatePropertyAll(
+        EdgeInsets.only(left: 16),
       ),
+      hintText: 'Search',
+      leading: const Icon(Icons.search),
+      controller: widget.controller,
+      trailing: [
+        if (_isClearVisible)
+          IconButton(
+            onPressed: _clearSearch,
+            icon: const Icon(Icons.close),
+          ),
+      ],
     );
   }
 
@@ -255,30 +309,42 @@ class _ConfigListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final customColors = Theme.of(context).extension<CustomColors>();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (changed)
           Container(
-            color: const Color(0xFF322D23),
+            color: customColors?.warningContainer,
             child: Padding(
               padding: const EdgeInsetsGeometry.only(
                 top: 16,
                 left: 16,
                 right: 16,
               ),
-              child: Callout(
-                isValid: false,
+              child: Callout.warning(
+                style: CalloutStyle(cornerRadius: 8),
                 icon: Icons.error,
-                text: 'Changed',
-                actionText: 'Revert',
-                onActionTap: () {},
+                text: 'Locally changed',
+                action: TextButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    overlayColor: WidgetStatePropertyAll(
+                      customColors?.warningContainer,
+                    ),
+                    foregroundColor: WidgetStatePropertyAll(
+                      customColors?.warning,
+                    ),
+                  ),
+                  child: const Text('Reset'),
+                ),
               ),
             ),
           ),
         ListTile(
           tileColor: changed
-              ? const Color(0xFF322D23)
+              ? customColors?.warningContainer
               : ListTileTheme.of(context).tileColor,
           contentPadding: const EdgeInsets.only(
             left: 16,
