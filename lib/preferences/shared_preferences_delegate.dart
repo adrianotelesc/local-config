@@ -7,7 +7,7 @@ class SharedPreferencesDelegate extends PreferencesDelegate {
   final _preferences = SharedPreferencesAsync();
 
   @override
-  Future<Map<String, String>> getAll() async {
+  Future<Map<String, String>> getAllPreferences() async {
     final all = await _preferences.getAll();
     final entries = all.entries.where((entry) {
       return entry.key.startsWith(_keyPrefix);
@@ -30,6 +30,14 @@ class SharedPreferencesDelegate extends PreferencesDelegate {
 
   @override
   Future<void> removePreference(String key) async {
-    await _preferences.remove(key);
+    await _preferences.remove(_keyPrefix + key);
+  }
+
+  @override
+  Future<void> removeAllPreferences() async {
+    final preferences = await getAllPreferences();
+    for (final key in preferences.keys) {
+      removePreference(key);
+    }
   }
 }

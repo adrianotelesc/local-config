@@ -25,17 +25,18 @@ class LocalConfig {
   Future<void> initialize({required Map<String, Config> configs}) async {
     _configs.addAll(configs);
 
-    var configsInPreferences = await _preferencesDelegate.getAll();
+    var configsInPreferences = await _preferencesDelegate.getAllPreferences();
     for (final key in configsInPreferences.keys) {
       if (!configs.containsKey(key)) {
         await _preferencesDelegate.removePreference(key);
       }
     }
 
+    final localConfigs = <String, Config>{};
     for (final config in configsInPreferences.entries) {
-      configs[config.key] = Config(value: config.value);
+      localConfigs[config.key] = Config(value: config.value);
     }
-    _localConfigs.addAll(configs);
+    _localConfigs.addAll(localConfigs);
 
     _localConfigsStreamController.add(_localConfigs);
   }
@@ -70,10 +71,22 @@ class LocalConfig {
   }
 
   Future<void> setString(String key, String value) async {
-    if (!_localConfigs.containsKey(key)) return;
     _localConfigs[key] = Config(value: value);
     _localConfigsStreamController.add(_localConfigs);
     await _preferencesDelegate.setPreference(key, value);
+  }
+
+  Future<void> remove(String key) async {
+    if (!_localConfigs.containsKey(key)) return;
+    _localConfigs.remove(key);
+    _localConfigsStreamController.add(_localConfigs);
+    await _preferencesDelegate.removePreference(key);
+  }
+
+  Future<void> removeAll() async {
+    _localConfigs.clear();
+    _localConfigsStreamController.add(_localConfigs);
+    await _preferencesDelegate.removeAllPreferences();
   }
 
   Widget getLocalConfigsScreen() => const LocalConfigScreen();

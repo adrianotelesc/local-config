@@ -21,7 +21,7 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
 
   final _searchTextController = TextEditingController();
 
-  Map<String, Config> _configs = {};
+  Map<String, Config> _localConfigs = {};
   List<MapEntry<String, Config>> _allConfigs = [];
   List<MapEntry<String, Config>> _visibleConfigs = [];
 
@@ -30,7 +30,7 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
   @override
   void initState() {
     super.initState();
-    _configs = LocalConfig.instance.configs;
+    _allConfigs = LocalConfig.instance.configs.entries.toList();
     _configsStreamSubscription = _subscribeToConfigsStream();
     _searchTextController.addListener(_handleSearchTextChange);
   }
@@ -39,9 +39,9 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
     return LocalConfig.instance.localConfigsStream.listen(_updateConfigsState);
   }
 
-  void _updateConfigsState(Map<String, Config> allConfigs) {
+  void _updateConfigsState(Map<String, Config> localConfigs) {
     setState(() {
-      _allConfigs = allConfigs.entries.toList();
+      _localConfigs = localConfigs;
       _visibleConfigs = _filterConfigsBy(_searchTextController.text);
     });
   }
@@ -126,28 +126,31 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
               controller: _scrollController,
               slivers: [
                 const _AppBar(),
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: SliverHeaderDelegate(
-                    minHeight: 59,
-                    maxHeight: 59,
-                    child: Stack(
-                      children: [
-                        Container(
-                          color: Colors.black,
-                        ),
-                        Callout.warning(
-                          icon: Icons.error,
-                          text: 'Configs changed locally',
-                          action: FilledButton(
-                            onPressed: () {},
-                            child: const Text('Reset All'),
+                if (_localConfigs.isNotEmpty)
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: SliverHeaderDelegate(
+                      minHeight: 59,
+                      maxHeight: 59,
+                      child: Stack(
+                        children: [
+                          Container(
+                            color: Colors.black,
                           ),
-                        )
-                      ],
+                          Callout.warning(
+                            icon: Icons.error,
+                            text: 'Configs changed locally',
+                            action: FilledButton(
+                              onPressed: () {
+                                LocalConfig.instance.removeAll();
+                              },
+                              child: const Text('Reset All'),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 12,
@@ -158,8 +161,8 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
                   ),
                 ),
                 _ConfigList(
-                  localConfigs: _visibleConfigs,
-                  configs: _configs,
+                  configs: _visibleConfigs,
+                  localConfigs: _localConfigs,
                 )
               ],
             ),
@@ -238,30 +241,30 @@ class _SearchBarState extends State<_SearchBar> {
 
 class _ConfigList extends StatelessWidget {
   const _ConfigList({
-    this.configs = const {},
-    this.localConfigs = const [],
+    this.configs = const [],
+    this.localConfigs = const {},
   });
 
-  final Map<String, Config> configs;
-  final List<MapEntry<String, Config>> localConfigs;
+  final List<MapEntry<String, Config>> configs;
+  final Map<String, Config> localConfigs;
 
   @override
   Widget build(BuildContext context) {
-    if (localConfigs.isEmpty) {
+    if (configs.isEmpty) {
       return const _EmptyState();
     }
 
     return SliverList.separated(
-      itemCount: localConfigs.length,
+      itemCount: configs.length,
       separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (_, index) {
-        final localConfigEntry = localConfigs[index];
-        final configEntry = configs[localConfigEntry.key];
-        final changed = configEntry != null &&
-            configEntry.value != localConfigEntry.value.value;
+        final configEntry = configs[index];
+        final localConfig = localConfigs[configEntry.key];
+        final changed =
+            localConfig != null && localConfig.value != configEntry.value.value;
         return _ConfigListTile(
-          name: localConfigEntry.key,
-          value: localConfigEntry.value,
+          name: configEntry.key,
+          value: localConfig ?? configEntry.value,
           changed: changed,
         );
       },
@@ -328,7 +331,9 @@ class _ConfigListTile extends StatelessWidget {
                 icon: Icons.error,
                 text: 'Locally changed',
                 action: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    LocalConfig.instance.remove(name);
+                  },
                   style: ButtonStyle(
                     overlayColor: WidgetStatePropertyAll(
                       customColors?.warningContainer,
