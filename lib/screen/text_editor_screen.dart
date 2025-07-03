@@ -46,7 +46,10 @@ class _TextEditorScreenState extends State<TextEditorScreen> {
       data: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.dark,
-          seedColor: Colors.deepPurple,
+          seedColor: const Color(0xFF1A73E8),
+          primary: const Color(0XFF86ABF2),
+          onPrimary: const Color(0XFF0B1D46),
+          surface: const Color(0xFF121212),
         ),
         useMaterial3: true,
         searchBarTheme: SearchBarTheme.of(context).copyWith(
