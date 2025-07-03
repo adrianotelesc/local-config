@@ -35,8 +35,7 @@ class _ConfigFormState extends State<_ConfigForm> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 24,
+        vertical: 16,
       ),
       child: Form(
         key: _configFormKey,
@@ -44,18 +43,163 @@ class _ConfigFormState extends State<_ConfigForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _ConfigFormHeader(
-              configName: widget.configName,
-              configValueType: widget.configValue.type,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Edit parameter',
+                    style: TextTheme.of(context).titleLarge,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.close),
+                    tooltip: 'Close',
+                  ),
+                ],
+              ),
             ),
-            _ConfigValueFormField(
-              configValueController: _configValueController,
-              configValue: widget.configValue,
+            const SizedBox.square(dimension: 8),
+            const Divider(),
+            const SizedBox.square(dimension: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  Column(
+                    spacing: 8,
+                    children: [
+                      Tooltip(
+                        preferBelow: false,
+                        showDuration: const Duration(seconds: 3),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.inverseSurface,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                        ),
+                        triggerMode: TooltipTriggerMode.tap,
+                        richMessage: const TextSpan(
+                          children: [
+                            TextSpan(
+                              text:
+                                  "This is the key you'll pass to the Local Config SDK,\nfor example:\n\n",
+                            ),
+                            TextSpan(
+                              text: 'config.getBoolean("',
+                              style: TextStyle(
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'config_bool',
+                              style: TextStyle(
+                                fontFamily: 'monospace',
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '");',
+                              style: TextStyle(
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 8,
+                          children: [
+                            Text(
+                              'Parameter name (key)',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            const Icon(
+                              Icons.help_outline,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      ),
+                      TextFormField(
+                        enabled: false,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        initialValue: widget.configName,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 16,
+                          ),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    spacing: 8,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Data type',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      DropdownMenu(
+                        expandedInsets: EdgeInsets.zero,
+                        initialSelection: widget.configValue.type.displayName,
+                        leadingIcon: Icon(widget.configValue.type.icon),
+                        dropdownMenuEntries: ConfigType.values.map((type) {
+                          return DropdownMenuEntry<String>(
+                            value: type.displayName,
+                            label: type.displayName,
+                            leadingIcon: Icon(type.icon),
+                          );
+                        }).toList(),
+                        enabled: false,
+                        inputDecorationTheme: const InputDecorationTheme(
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.only(left: 16, right: 10),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    spacing: 8,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Default value',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      _ConfigValueFormField(
+                        configValueController: _configValueController,
+                        configValue: widget.configValue,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            _FormActions(
-              formKey: _configFormKey,
-              configName: widget.configName,
-              configValueTextController: _configValueController,
+            const SizedBox.square(dimension: 16),
+            const Divider(),
+            const SizedBox.square(dimension: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: _FormActions(
+                formKey: _configFormKey,
+                configName: widget.configName,
+                configValueTextController: _configValueController,
+              ),
             ),
           ],
         ),
@@ -67,41 +211,6 @@ class _ConfigFormState extends State<_ConfigForm> {
   void dispose() {
     _configValueController.dispose();
     super.dispose();
-  }
-}
-
-class _ConfigFormHeader extends StatelessWidget {
-  const _ConfigFormHeader({
-    required this.configName,
-    required this.configValueType,
-  });
-
-  final String configName;
-  final ConfigType configValueType;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          configName,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(configValueType.icon),
-            const SizedBox.square(dimension: 4),
-            Text(
-              configValueType.displayName,
-              style: Theme.of(context).textTheme.bodyMedium,
-            )
-          ],
-        )
-      ],
-    );
   }
 }
 
@@ -118,18 +227,15 @@ class _ConfigValueFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasPresetValues = configValue.type.presetValues.isNotEmpty;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: hasPresetValues
-          ? _ConfigValueDropdownButton(
-              configValueTextController: configValueController,
-              configValueType: configValue.type,
-            )
-          : _ConfigValueTextField(
-              configValueTextController: configValueController,
-              configValueType: configValue.type,
-            ),
-    );
+    return hasPresetValues
+        ? _ConfigValueDropdownButton(
+            configValueTextController: configValueController,
+            configValueType: configValue.type,
+          )
+        : _ConfigValueTextField(
+            configValueTextController: configValueController,
+            configValueType: configValue.type,
+          );
   }
 }
 
@@ -146,10 +252,6 @@ class _ConfigValueTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 16,
-        ),
         border: const OutlineInputBorder(),
         suffixIcon: configValueType.isText
             ? IconButton(
