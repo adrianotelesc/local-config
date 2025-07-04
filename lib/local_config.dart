@@ -2,7 +2,7 @@ library local_config;
 
 import 'dart:async';
 
-import 'package:local_config/extension/string_parsing.dart';
+import 'package:local_config/extension/string_parsing_extension.dart';
 import 'package:local_config/model/config.dart';
 import 'package:flutter/material.dart';
 import 'package:local_config/storage/key_value_store.dart';

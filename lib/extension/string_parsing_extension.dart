@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-extension StringParsing on String {
+extension StringParsingExtension on String {
   Map<String, dynamic>? get asJson {
     try {
       return jsonDecode(this);

@@ -1,8 +1,7 @@
 import 'package:local_config/local_config.dart';
 import 'package:flutter/material.dart';
 import 'package:local_config/ui/screen/text_editor_screen.dart';
-import 'package:local_config/extension/build_context_extension.dart';
-import 'package:local_config/extension/config_value_extension.dart';
+import 'package:local_config/extension/config_display_extension.dart';
 import 'package:local_config/model/config.dart';
 
 class _ConfigForm extends StatefulWidget {
@@ -225,7 +224,7 @@ class _ConfigValueFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasPresetValues = configValue.type.presetValues.isNotEmpty;
+    final hasPresetValues = configValue.type.presets.isNotEmpty;
 
     return hasPresetValues
         ? _ConfigValueDropdownButton(
@@ -302,7 +301,7 @@ class _ConfigValueDropdownButton extends StatelessWidget {
             border: OutlineInputBorder(),
             contentPadding: EdgeInsets.only(left: 16, right: 10),
           ),
-          items: configValueType.presetValues.map((value) {
+          items: configValueType.presets.map((value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(value),
@@ -366,10 +365,7 @@ void showConfigFormModal({
     isScrollControlled: true,
     useSafeArea: true,
     builder: (context) {
-      return Padding(
-        padding: EdgeInsets.only(bottom: context.bottomSheetBottomPadding),
-        child: _ConfigForm(configName: name, configValue: value),
-      );
+      return _ConfigForm(configName: name, configValue: value);
     },
   );
 }
