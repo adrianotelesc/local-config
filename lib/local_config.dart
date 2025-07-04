@@ -5,8 +5,8 @@ import 'dart:async';
 import 'package:local_config/extension/string_parsing.dart';
 import 'package:local_config/model/config.dart';
 import 'package:flutter/material.dart';
-import 'package:local_config/preferences/preferences_delegate.dart';
-import 'package:local_config/preferences/shared_preferences_delegate.dart';
+import 'package:local_config/storage/key_value_store.dart';
+import 'package:local_config/storage/shared_preferences_store.dart';
 import 'package:local_config/screen/local_config_screen.dart';
 
 class LocalConfig {
@@ -14,7 +14,7 @@ class LocalConfig {
 
   static final instance = LocalConfig._();
 
-  final PreferencesDelegate _preferencesDelegate = SharedPreferencesDelegate();
+  final KeyValueStore _preferencesDelegate = SharedPreferencesStore();
 
   final _configs = <String, Config>{};
   Map<String, Config> get configs => _configs;
@@ -25,10 +25,10 @@ class LocalConfig {
   Future<void> initialize({required Map<String, Config> configs}) async {
     _configs.addAll(configs);
 
-    var configsInPreferences = await _preferencesDelegate.getAllPreferences();
+    var configsInPreferences = await _preferencesDelegate.all;
     for (final key in configsInPreferences.keys) {
       if (!configs.containsKey(key)) {
-        await _preferencesDelegate.removePreference(key);
+        await _preferencesDelegate.remove(key);
       }
     }
 
@@ -73,20 +73,20 @@ class LocalConfig {
   Future<void> setString(String key, String value) async {
     _localConfigs[key] = Config(value: value);
     _localConfigsStreamController.add(_localConfigs);
-    await _preferencesDelegate.setPreference(key, value);
+    await _preferencesDelegate.set(key, value);
   }
 
   Future<void> remove(String key) async {
     if (!_localConfigs.containsKey(key)) return;
     _localConfigs.remove(key);
     _localConfigsStreamController.add(_localConfigs);
-    await _preferencesDelegate.removePreference(key);
+    await _preferencesDelegate.remove(key);
   }
 
   Future<void> removeAll() async {
     _localConfigs.clear();
     _localConfigsStreamController.add(_localConfigs);
-    await _preferencesDelegate.removeAllPreferences();
+    await _preferencesDelegate.clear();
   }
 
   Widget getLocalConfigsScreen() => const LocalConfigScreen();
