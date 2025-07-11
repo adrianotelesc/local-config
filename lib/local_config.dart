@@ -9,6 +9,7 @@ import 'package:local_config/storage/key_value_store.dart';
 import 'package:local_config/storage/shared_preferences_store.dart';
 import 'package:local_config/ui/screen/local_config_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalConfig {
   LocalConfig._();
@@ -28,7 +29,7 @@ class LocalConfig {
 
     _configs.addAll(configs);
 
-    var configsInPreferences = await _keyValueStore.data;
+    var configsInPreferences = await _keyValueStore.all;
     for (final key in configsInPreferences.keys) {
       if (!configs.containsKey(key)) {
         await _keyValueStore.remove(key);
@@ -45,9 +46,11 @@ class LocalConfig {
   }
 
   Future<void> _initializeKeyValueStore() async {
-    final packageInfo = await PackageInfo.fromPlatform();
+    final sharedPreferencesAsync = SharedPreferencesAsync();
+    final packageName = (await PackageInfo.fromPlatform()).packageName;
     _keyValueStore = SharedPreferencesStore(
-      packageName: packageInfo.packageName,
+      sharedPreferencesAsync: sharedPreferencesAsync,
+      packageName: packageName,
     );
   }
 
