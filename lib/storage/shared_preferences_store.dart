@@ -6,15 +6,11 @@ class SharedPreferencesStore extends KeyValueStore {
 
   final SharedPreferencesAsync _sharedPreferencesAsync;
 
-  final String _packageName;
-
   SharedPreferencesStore({
     required SharedPreferencesAsync sharedPreferencesAsync,
-    required String packageName,
-  })  : _sharedPreferencesAsync = sharedPreferencesAsync,
-        _packageName = packageName;
+  }) : _sharedPreferencesAsync = sharedPreferencesAsync;
 
-  String get _internalKeyPrefix => '$_packageName.$_namespace:';
+  String get _internalKeyPrefix => '$_namespace:';
 
   @override
   Future<Map<String, String>> get all async {
