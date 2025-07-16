@@ -7,9 +7,9 @@ import 'package:local_config/model/config.dart';
 
 extension ConfigDisplayExtension on Config {
   String get displayText {
-    return type == ConfigType.string && (changedValue ?? value).isEmpty
+    return type == ConfigType.string && value.isEmpty
         ? '(empty string)'
-        : changedValue ?? value;
+        : value;
   }
 }
 

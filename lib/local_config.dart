@@ -21,7 +21,7 @@ class LocalConfig {
         sharedPreferencesAsync: SharedPreferencesAsync(),
       ),
     );
-    await repo.initialize(all: all);
+    await repo.populate(all: all);
     ServiceLocator.register<ConfigRepository>(repo);
   }
 

@@ -136,7 +136,7 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
               slivers: [
                 const _AppBar(),
                 if (_configs
-                    .where((config) => config.value.changedValue != null)
+                    .where((config) => config.value.isOverridden)
                     .isNotEmpty)
                   SliverPersistentHeader(
                     pinned: true,
@@ -154,7 +154,7 @@ class _LocalConfigScreenState extends State<LocalConfigScreen> {
                             action: FilledButton(
                               onPressed: () {
                                 ServiceLocator.get<ConfigRepository>()
-                                    .removeAll();
+                                    .resetAll();
                               },
                               child: const Text('Reset all'),
                             ),
@@ -271,12 +271,9 @@ class _ConfigList extends StatelessWidget {
       separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (_, index) {
         final configEntry = configs[index];
-        final localConfig = localConfigs[configEntry.key];
-        final changed = localConfig?.changedValue != null;
         return _ConfigListTile(
           name: configEntry.key,
-          config: localConfig ?? configEntry.value,
-          changed: changed,
+          config: configEntry.value,
         );
       },
     );
@@ -314,12 +311,10 @@ class _ConfigListTile extends StatelessWidget {
   const _ConfigListTile({
     required this.name,
     required this.config,
-    required this.changed,
   });
 
   final String name;
   final Config config;
-  final bool changed;
 
   @override
   Widget build(BuildContext context) {
@@ -328,7 +323,7 @@ class _ConfigListTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (changed)
+        if (config.isOverridden)
           Container(
             color: customColors?.warningContainer,
             child: Padding(
@@ -343,7 +338,7 @@ class _ConfigListTile extends StatelessWidget {
                 text: 'Locally changed',
                 action: TextButton(
                   onPressed: () {
-                    ServiceLocator.get<ConfigRepository>().remove(name);
+                    ServiceLocator.get<ConfigRepository>().reset(name);
                   },
                   style: ButtonStyle(
                     overlayColor: WidgetStatePropertyAll(
@@ -359,7 +354,7 @@ class _ConfigListTile extends StatelessWidget {
             ),
           ),
         ListTile(
-          tileColor: changed
+          tileColor: config.isOverridden
               ? customColors?.warningContainer
               : ListTileTheme.of(context).tileColor,
           contentPadding: const EdgeInsets.only(
@@ -369,7 +364,7 @@ class _ConfigListTile extends StatelessWidget {
           title: Text(
             name,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: changed ? FontWeight.bold : null,
+                  fontWeight: config.isOverridden ? FontWeight.bold : null,
                 ),
           ),
           subtitle: Text(
@@ -377,7 +372,7 @@ class _ConfigListTile extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: changed ? FontWeight.bold : null,
+                  fontWeight: config.isOverridden ? FontWeight.bold : null,
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
           ),

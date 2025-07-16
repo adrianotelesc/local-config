@@ -1,30 +1,50 @@
 import 'package:local_config/extension/string_parsing_extension.dart';
 
 class Config {
-  final String value;
-  final String? changedValue;
+  final String defaultValue;
+
+  final String? overriddenValue;
+
+  String get value => overriddenValue ?? defaultValue;
+
+  bool get isDefault => overriddenValue == null;
+
+  bool get isOverridden => overriddenValue != null;
 
   ConfigType get type {
-    if (value.asBool != null) return ConfigType.boolean;
-    if (value.asDouble != null) return ConfigType.number;
-    if (value.asJson != null) return ConfigType.json;
+    if (defaultValue.asBool != null) return ConfigType.boolean;
+    if (defaultValue.asDouble != null) return ConfigType.number;
+    if (defaultValue.asJson != null) return ConfigType.json;
     return ConfigType.string;
   }
 
   const Config({
-    required this.value,
-    this.changedValue,
+    required this.defaultValue,
+    this.overriddenValue,
   });
 
-  Config copyWith({
-    String? value,
-    String? changedValue,
-  }) {
+  Config copyWith(
+    String? overriddenValue,
+  ) {
     return Config(
-      value: value ?? this.value,
-      changedValue: changedValue,
+      defaultValue: defaultValue,
+      overriddenValue: overriddenValue,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Config &&
+          defaultValue == other.defaultValue &&
+          overriddenValue == other.overriddenValue;
+
+  @override
+  int get hashCode => Object.hash(defaultValue, overriddenValue);
+
+  @override
+  String toString() =>
+      'Config(default: $defaultValue, overridden: $overriddenValue)';
 }
 
 enum ConfigType {

@@ -5,64 +5,86 @@ import 'package:local_config/storage/key_value_store.dart';
 
 class ConfigRepository {
   final KeyValueStore _store;
+
   final _configs = <String, Config>{};
-  final _controller = StreamController<Map<String, Config>>();
+
+  final _controller = StreamController<Map<String, Config>>.broadcast();
 
   ConfigRepository({
     required KeyValueStore store,
   }) : _store = store;
 
-  Map<String, Config> get configs => _configs;
+  Map<String, Config> get configs => Map.unmodifiable(_configs);
 
-  Stream<Map<String, Config>> get stream => _controller.stream;
+  Stream<Map<String, Config>> get stream async* {
+    yield configs;
+    yield* _controller.stream;
+  }
 
-  Future<void> initialize({
-    Map<String, String> all = const <String, String>{},
+  Future<void> populate({
+    required Map<String, String> all,
   }) async {
+    final stored = await _store.all;
+    _populateConfigs(all, stored);
+    await _pruneStore(all, stored);
+  }
+
+  void _populateConfigs(
+    Map<String, String> all,
+    Map<String, String> stored,
+  ) {
     _configs.addAll(
-      all.map((key, value) => MapEntry(key, Config(value: value))),
+      all.map((key, value) {
+        return MapEntry(
+          key,
+          Config(
+            defaultValue: value,
+            overriddenValue: stored[key],
+          ),
+        );
+      }),
     );
+    _controller.add(configs);
+  }
 
-    final storeAll = await _store.all;
-    for (final storeEntry in storeAll.entries) {
-      final config = _configs[storeEntry.key];
-      if (config == null) {
-        await _store.remove(storeEntry.key);
-        continue;
-      }
-      _configs[storeEntry.key] = config.copyWith(
-        changedValue: storeEntry.value,
-      );
-    }
-
-    _controller.add(_configs);
+  Future<void> _pruneStore(
+    Map<String, String> all,
+    Map<String, String> stored,
+  ) async {
+    final keysToRemove = stored.keys.where((key) {
+      return !all.containsKey(key);
+    });
+    await Future.wait(keysToRemove.map(_store.remove));
   }
 
   Future<Config?> get(String key) async => _configs[key];
 
   Future<void> set(String key, String value) async {
-    final config = _configs[key];
-    if (config == null) return;
-    _configs[key] = config.copyWith(changedValue: value);
-    _controller.add(_configs);
+    final changed = _changeConfig(key, value);
+    if (!changed) return;
+
     await _store.set(key, value);
   }
 
-  Future<void> remove(String key) async {
-    final config = _configs[key];
-    if (config == null) return;
-    _configs[key] = config.copyWith(changedValue: null);
-    _controller.add(_configs);
+  bool _changeConfig(String key, String? value) {
+    if (!_configs.containsKey(key)) return false;
+
+    _configs.update(key, (config) => config.copyWith(value));
+    _controller.add(configs);
+    return true;
+  }
+
+  Future<void> reset(String key) async {
+    final changed = _changeConfig(key, null);
+    if (!changed) return;
+
     await _store.remove(key);
   }
 
-  Future<void> removeAll() async {
-    final configs = Map<String, Config>.from(_configs);
-    _configs.clear();
-    _configs.addAll(configs.map(
-      (key, value) => MapEntry(key, value.copyWith(changedValue: null)),
-    ));
-    _controller.add(_configs);
+  Future<void> resetAll() async {
+    _configs.updateAll((key, value) => value.copyWith(null));
+    _controller.add(configs);
+
     await _store.clear();
   }
 }
