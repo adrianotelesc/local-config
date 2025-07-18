@@ -333,7 +333,9 @@ class _ConfigListTile extends StatelessWidget {
                 right: 16,
               ),
               child: Callout.warning(
-                style: CalloutStyle(cornerRadius: 8),
+                style: CalloutStyle(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 icon: Icons.error,
                 text: 'Locally changed',
                 action: TextButton(
