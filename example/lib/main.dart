@@ -6,11 +6,10 @@ import 'package:local_config/local_config.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final configs = <String, String>{
-    'app_name': 'Local Config Example',
-    'app_version': '1.0.0',
-    'api_base_url': 'https://api.example.com',
-    'feature_x_enabled': 'true',
-    'max_items': '100',
+    'config_string': 'Local Config Example',
+    'config_number': '1',
+    'config_boolean': 'false',
+    'config_json': '{}',
   };
   LocalConfig.instance.initialize(configs: configs);
   runApp(const ExampleApp());
