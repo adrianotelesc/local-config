@@ -154,14 +154,14 @@ class _FormattingBar extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            Icons.check_circle,
+            isValid ? Icons.check_circle : Icons.error,
             color: primaryColor,
           ),
           const SizedBox.square(
             dimension: 8,
           ),
           Text(
-            'Valid JSON',
+            isValid ? 'Valid JSON' : 'Invalid JSON',
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
@@ -175,7 +175,7 @@ class _FormattingBar extends StatelessWidget {
                 actionColor,
               ),
             ),
-            child: const Text('Format'),
+            child: isValid ? const Text('Format') : const SizedBox.shrink(),
           )
         ],
       ),
@@ -193,7 +193,7 @@ class _Editor extends StatelessWidget {
     return Expanded(
       child: CodeEditor(
         wordWrap: false,
-        autocompleteSymbols: true,
+        autocompleteSymbols: false,
         sperator: Container(
           width: 0.5,
           color: Theme.of(context).colorScheme.surfaceBright,
