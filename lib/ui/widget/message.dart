@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// TODO: Find a better name.
+
 class Message extends StatelessWidget {
   final EdgeInsets padding;
   final CrossAxisAlignment crossAxisAlignment;

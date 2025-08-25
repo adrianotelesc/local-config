@@ -9,7 +9,7 @@ class DefaultConfigRepository implements ConfigRepository {
 
   final _configs = <String, Config>{};
 
-  final _configsController = StreamController<Map<String, Config>>.broadcast();
+  final _controller = StreamController<Map<String, Config>>.broadcast();
 
   DefaultConfigRepository({
     required KeyValueDataSource store,
@@ -19,7 +19,7 @@ class DefaultConfigRepository implements ConfigRepository {
   Map<String, Config> get configs => Map.unmodifiable(_configs);
 
   @override
-  Stream<Map<String, Config>> get configsStream => _configsController.stream;
+  Stream<Map<String, Config>> get configsStream => _controller.stream;
 
   @override
   Future<void> populate(Map<String, String> configs) async {
@@ -40,7 +40,7 @@ class DefaultConfigRepository implements ConfigRepository {
         );
       }),
     );
-    _configsController.add(configs);
+    _controller.add(configs);
   }
 
   @override
@@ -61,7 +61,7 @@ class DefaultConfigRepository implements ConfigRepository {
     final updated = _configs.update(key, (config) {
       return config.copyWith(overriddenValue: value);
     });
-    _configsController.add(configs);
+    _controller.add(configs);
     return updated;
   }
 
@@ -81,6 +81,6 @@ class DefaultConfigRepository implements ConfigRepository {
     _configs.updateAll((_, value) {
       return value.copyWith(overriddenValue: null);
     });
-    _configsController.add(configs);
+    _controller.add(configs);
   }
 }

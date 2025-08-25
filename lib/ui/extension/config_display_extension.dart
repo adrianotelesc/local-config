@@ -5,7 +5,7 @@ import 'package:local_config/ui/widget/text_editor/controller/string_editor_cont
 import 'package:local_config/common/extension/string_extension.dart';
 import 'package:local_config/domain/model/config.dart';
 
-extension ConfigExtension on Config {
+extension ConfigDisplayExtension on Config {
   String get displayText {
     return type == ConfigType.string && value.isEmpty
         ? '(empty string)'
@@ -49,6 +49,7 @@ extension ConfigTypeExtension on ConfigType {
     return null;
   }
 
+  // TODO: Refactor this.
   TextEditorController get textEditorController {
     return switch (this) {
       ConfigType.json => JsonEditorController(),

@@ -5,6 +5,8 @@ import 'package:re_editor/re_editor.dart';
 import 'package:re_highlight/languages/json.dart';
 import 'package:re_highlight/styles/atom-one-dark.dart';
 
+// TODO: Refactor everything about text editor.
+
 class TextEditor extends StatefulWidget {
   const TextEditor({
     super.key,

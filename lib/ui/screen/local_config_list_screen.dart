@@ -6,7 +6,7 @@ import 'package:local_config/common/extension/map_extension.dart';
 import 'package:local_config/common/extension/string_extension.dart';
 import 'package:local_config/domain/repository/config_repository.dart';
 import 'package:local_config/ui/theming/styles.dart';
-import 'package:local_config/common/extension/config_extension.dart';
+import 'package:local_config/ui/extension/config_display_extension.dart';
 import 'package:local_config/ui/theming/theme.dart';
 import 'package:local_config/ui/widget/animated_floating_text.dart';
 import 'package:local_config/ui/widget/callout.dart';
@@ -146,6 +146,8 @@ class _AppBar extends StatelessWidget {
 class _SetupMessage extends StatelessWidget {
   const _SetupMessage();
 
+  // TODO: Improve this message.
+
   @override
   Widget build(BuildContext context) {
     return SliverFillRemaining(
@@ -210,6 +212,7 @@ class _List extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
+      // TODO: Improve this message.
       return SliverFillRemaining(
         hasScrollBody: false,
         child: Message(

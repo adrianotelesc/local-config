@@ -1,6 +1,8 @@
 import 'package:local_config/domain/data_source/key_value_data_source.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// TODO: Make operations synchronized.
+
 class SharedPreferencesDataSource extends KeyValueDataSource {
   static const _namespace = 'local_config';
 

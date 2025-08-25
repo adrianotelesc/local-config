@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:local_config/ui/theming/colors.dart';
 import 'package:local_config/ui/theming/extended_color_scheme.dart';
 
+// TODO: Refactor all about theme.
+
 final defaultTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
     brightness: Brightness.dark,
