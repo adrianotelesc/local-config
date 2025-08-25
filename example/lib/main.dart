@@ -85,7 +85,9 @@ class _ExamplePageState extends State<ExamplePage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const LocalConfigScreen()),
+            MaterialPageRoute(
+              builder: (context) => const LocalConfigListScreen(),
+            ),
           );
         },
         tooltip: 'Local Config',
