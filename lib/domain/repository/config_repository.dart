@@ -7,7 +7,7 @@ abstract class ConfigRepository {
 
   Future<void> populate(Map<String, String> configs);
 
-  Future<Config?> get(String key);
+  Config? get(String key);
 
   Future<void> set(String key, String value);
 

@@ -9,7 +9,7 @@ class DummyConfigRepository implements ConfigRepository {
   Stream<Map<String, Config>> get configsStream => const Stream.empty();
 
   @override
-  Future<Config?> get(String key) async => null;
+  Config? get(String key) => null;
 
   @override
   Future<void> populate(Map<String, String> configs) async {}

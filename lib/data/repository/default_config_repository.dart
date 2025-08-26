@@ -44,7 +44,7 @@ class DefaultConfigRepository implements ConfigRepository {
   }
 
   @override
-  Future<Config?> get(String key) async => _configs[key];
+  Config? get(String key) => _configs[key];
 
   @override
   Future<void> set(String key, String value) async {
