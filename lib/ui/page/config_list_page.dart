@@ -5,34 +5,30 @@ import 'package:local_config/common/extension/map_extension.dart';
 import 'package:local_config/common/extension/string_extension.dart';
 import 'package:local_config/core/service_locator/service_locator.dart';
 import 'package:local_config/domain/repository/config_repository.dart';
+import 'package:local_config/ui/local_config_routes.dart';
 import 'package:local_config/ui/theming/styles.dart';
 import 'package:local_config/ui/extension/config_display_extension.dart';
 import 'package:local_config/ui/theming/theme.dart';
 import 'package:local_config/ui/widget/animated_floating_text.dart';
 import 'package:local_config/ui/widget/callout.dart';
-import 'package:local_config/ui/screen/local_config_editing_screen.dart';
 import 'package:local_config/domain/model/config.dart';
 import 'package:local_config/ui/widget/extended_list_tile.dart';
 import 'package:local_config/ui/widget/clearable_search_bar.dart';
 import 'package:local_config/ui/widget/message.dart';
 import 'package:local_config/ui/widget/animated_jitter_text.dart';
+import 'package:provider/provider.dart';
 
-class LocalConfigListScreen extends StatefulWidget {
-  final ServiceLocator locator;
-
-  const LocalConfigListScreen({
-    super.key,
-    required this.locator,
-  });
+class ConfigListScreen extends StatefulWidget {
+  const ConfigListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _LocalConfigListScreenState();
+  State<StatefulWidget> createState() => _ConfigListScreenState();
 }
 
-class _LocalConfigListScreenState extends State<LocalConfigListScreen> {
+class _ConfigListScreenState extends State<ConfigListScreen> {
   final _controller = TextEditingController();
 
-  late final _repo = widget.locator.locate<ConfigRepository>();
+  late final ConfigRepository _repo;
 
   StreamSubscription? _sub;
 
@@ -45,6 +41,7 @@ class _LocalConfigListScreenState extends State<LocalConfigListScreen> {
   @override
   void initState() {
     super.initState();
+    _repo = context.read<ServiceLocator>().locate<ConfigRepository>();
     _updateConfigs(_repo.configs);
     _controller.addListener(_updateItems);
     _sub = _repo.configsStream.listen(_updateConfigs);
@@ -99,7 +96,6 @@ class _LocalConfigListScreenState extends State<LocalConfigListScreen> {
                     controller: _controller,
                   ),
                   _List(
-                    locator: widget.locator,
                     items: _items,
                     repo: _repo,
                   ),
@@ -207,12 +203,10 @@ class _SearchBar extends StatelessWidget {
 }
 
 class _List extends StatelessWidget {
-  final ServiceLocator locator;
   final List<(String, Config)> items;
   final ConfigRepository repo;
 
   const _List({
-    required this.locator,
     required this.items,
     required this.repo,
   });
@@ -269,16 +263,9 @@ class _List extends StatelessWidget {
               : null,
           trailing: IconButton(
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  fullscreenDialog: true,
-                  builder: (_) {
-                    return LocalConfigEditingScreen(
-                      locator: locator,
-                      name: name,
-                    );
-                  },
-                ),
+              Navigator.of(context).pushNamed(
+                LocalConfigRoutes.configEdit,
+                arguments: name,
               );
             },
             icon: const Icon(Icons.edit),

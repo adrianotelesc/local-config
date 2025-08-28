@@ -6,31 +6,33 @@ import 'package:local_config/domain/model/config.dart';
 import 'package:local_config/ui/widget/text_editor/text_editor.dart';
 import 'package:local_config/ui/theming/theme.dart';
 import 'package:local_config/ui/widget/input_form_field.dart';
+import 'package:provider/provider.dart';
 
-class LocalConfigEditingScreen extends StatefulWidget {
-  final ServiceLocator locator;
+class ConfigEditScreen extends StatefulWidget {
   final String name;
 
-  const LocalConfigEditingScreen({
+  const ConfigEditScreen({
     super.key,
-    required this.locator,
     required this.name,
   });
 
   @override
-  State<StatefulWidget> createState() => _LocalConfigEditingScreenState();
+  State<StatefulWidget> createState() => _ConfigEditScreenState();
 }
 
-class _LocalConfigEditingScreenState extends State<LocalConfigEditingScreen> {
+class _ConfigEditScreenState extends State<ConfigEditScreen> {
   final _controller = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
-  late final _repo = widget.locator.locate<ConfigRepository>();
+
+  late final ConfigRepository _repo;
 
   late Config _config;
 
   @override
   void initState() {
     super.initState();
+    _repo = context.read<ServiceLocator>().locate<ConfigRepository>();
     _config = _repo.configs[widget.name]!;
     _controller.text = _config.value;
   }

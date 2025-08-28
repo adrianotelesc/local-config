@@ -14,6 +14,7 @@ dependencies:
   re_editor: ^0.7.0
   re_highlight: ^0.0.3
   get_it: ^8.2.0
+  provider: ^6.1.5+1
 
 dev_dependencies:
   flutter_test:

@@ -72,10 +72,9 @@ class _ExamplePageState extends State<ExamplePage> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
+              Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => LocalConfig.instance.screen,
+                  builder: (_) => LocalConfig.instance.entrypoint,
                 ),
               );
             },
