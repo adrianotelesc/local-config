@@ -15,7 +15,4 @@ class StringEditorController implements TextEditorController {
 
   @override
   bool? validate(String value) => null;
-
-  @override
-  String title = 'String Editor';
 }

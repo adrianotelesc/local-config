@@ -12,40 +12,40 @@ class LocalConfigLocalizationsEn extends LocalConfigLocalizations {
   String get localConfig => 'Local Config';
 
   @override
-  String get search => 'Buscar';
+  String get search => 'Search';
 
   @override
-  String get configsChangedLocally => 'Configurações alteradas localmente';
+  String get configsChangedLocally => 'Configs changed locally';
 
   @override
-  String get changedLocally => 'Alterado localmente';
+  String get changedLocally => 'Locally changed';
 
   @override
-  String get revertAll => 'Reverter tudo';
+  String get revertAll => 'Revert all';
 
   @override
-  String get revert => 'Reverter';
+  String get revert => 'Revert';
 
   @override
-  String get editParameter => 'Editar parâmetro';
+  String get editParameter => 'Edit parameter';
 
   @override
-  String get save => 'Salvar';
+  String get save => 'Save';
 
   @override
-  String get parameterName => 'Nome do parâmetro (chave)';
+  String get parameterName => 'Parameter name (key)';
 
   @override
-  String get dataType => 'Tipo de dado';
+  String get dataType => 'Data type';
 
   @override
-  String get value => 'Valor';
+  String get value => 'Value';
 
   @override
-  String get close => 'Fechar';
+  String get close => 'Close';
 
   @override
-  String get fullScreenEditor => 'Editor de tela cheia';
+  String get fullScreenEditor => 'Full screen editor';
 
   @override
   String get noResults => 'Uuuh... Nothing here... Just emptiness...';
@@ -62,24 +62,35 @@ class LocalConfigLocalizationsEn extends LocalConfigLocalizations {
       'If you\\\'ve been waiting a while, maybe your configs are... empty.';
 
   @override
-  String get emptyString => '(string vazia)';
+  String get emptyString => '(empty string)';
 
   @override
-  String get boolean => 'Booleano';
+  String get boolean => 'Boolean';
 
   @override
-  String get number => 'Número';
+  String get number => 'Number';
 
   @override
-  String get invalidBoolean => 'Booleano Inválido';
+  String get invalidBoolean => 'Invalid Boolean';
 
   @override
-  String get invalidNumber => 'Número Inválido';
+  String get invalidNumber => 'Invalid Number';
 
   @override
-  String get invalidJson => 'JSON Inválido';
+  String get invalidJson => 'Invalid JSON';
 
   @override
   String get help =>
       'This is the key you\'ll pass to the Local Config SDK,\nfor example:\n';
+
+  @override
+  String get validJson => 'Valid JSON';
+
+  @override
+  String get format => 'Format';
+
+  @override
+  String editorOf(Object type) {
+    return '$type Editor';
+  }
 }

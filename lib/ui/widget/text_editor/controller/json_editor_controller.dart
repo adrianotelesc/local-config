@@ -48,7 +48,4 @@ class JsonEditorController implements TextEditorController {
       return false;
     }
   }
-
-  @override
-  String title = 'JSON Editor';
 }

@@ -82,4 +82,15 @@ class LocalConfigLocalizationsPt extends LocalConfigLocalizations {
   @override
   String get help =>
       'This is the key you\'ll pass to the Local Config SDK,\nfor example:\n';
+
+  @override
+  String get validJson => 'JSON Válido';
+
+  @override
+  String get format => 'Formatar';
+
+  @override
+  String editorOf(Object type) {
+    return 'Editor de $type';
+  }
 }

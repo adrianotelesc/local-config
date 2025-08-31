@@ -110,73 +110,73 @@ abstract class LocalConfigLocalizations {
   /// No description provided for @search.
   ///
   /// In en, this message translates to:
-  /// **'Buscar'**
+  /// **'Search'**
   String get search;
 
   /// No description provided for @configsChangedLocally.
   ///
   /// In en, this message translates to:
-  /// **'Configurações alteradas localmente'**
+  /// **'Configs changed locally'**
   String get configsChangedLocally;
 
   /// No description provided for @changedLocally.
   ///
   /// In en, this message translates to:
-  /// **'Alterado localmente'**
+  /// **'Locally changed'**
   String get changedLocally;
 
   /// No description provided for @revertAll.
   ///
   /// In en, this message translates to:
-  /// **'Reverter tudo'**
+  /// **'Revert all'**
   String get revertAll;
 
   /// No description provided for @revert.
   ///
   /// In en, this message translates to:
-  /// **'Reverter'**
+  /// **'Revert'**
   String get revert;
 
   /// No description provided for @editParameter.
   ///
   /// In en, this message translates to:
-  /// **'Editar parâmetro'**
+  /// **'Edit parameter'**
   String get editParameter;
 
   /// No description provided for @save.
   ///
   /// In en, this message translates to:
-  /// **'Salvar'**
+  /// **'Save'**
   String get save;
 
   /// No description provided for @parameterName.
   ///
   /// In en, this message translates to:
-  /// **'Nome do parâmetro (chave)'**
+  /// **'Parameter name (key)'**
   String get parameterName;
 
   /// No description provided for @dataType.
   ///
   /// In en, this message translates to:
-  /// **'Tipo de dado'**
+  /// **'Data type'**
   String get dataType;
 
   /// No description provided for @value.
   ///
   /// In en, this message translates to:
-  /// **'Valor'**
+  /// **'Value'**
   String get value;
 
   /// No description provided for @close.
   ///
   /// In en, this message translates to:
-  /// **'Fechar'**
+  /// **'Close'**
   String get close;
 
   /// No description provided for @fullScreenEditor.
   ///
   /// In en, this message translates to:
-  /// **'Editor de tela cheia'**
+  /// **'Full screen editor'**
   String get fullScreenEditor;
 
   /// No description provided for @noResults.
@@ -206,37 +206,37 @@ abstract class LocalConfigLocalizations {
   /// No description provided for @emptyString.
   ///
   /// In en, this message translates to:
-  /// **'(string vazia)'**
+  /// **'(empty string)'**
   String get emptyString;
 
   /// No description provided for @boolean.
   ///
   /// In en, this message translates to:
-  /// **'Booleano'**
+  /// **'Boolean'**
   String get boolean;
 
   /// No description provided for @number.
   ///
   /// In en, this message translates to:
-  /// **'Número'**
+  /// **'Number'**
   String get number;
 
   /// No description provided for @invalidBoolean.
   ///
   /// In en, this message translates to:
-  /// **'Booleano Inválido'**
+  /// **'Invalid Boolean'**
   String get invalidBoolean;
 
   /// No description provided for @invalidNumber.
   ///
   /// In en, this message translates to:
-  /// **'Número Inválido'**
+  /// **'Invalid Number'**
   String get invalidNumber;
 
   /// No description provided for @invalidJson.
   ///
   /// In en, this message translates to:
-  /// **'JSON Inválido'**
+  /// **'Invalid JSON'**
   String get invalidJson;
 
   /// No description provided for @help.
@@ -244,6 +244,24 @@ abstract class LocalConfigLocalizations {
   /// In en, this message translates to:
   /// **'This is the key you\'ll pass to the Local Config SDK,\nfor example:\n'**
   String get help;
+
+  /// No description provided for @validJson.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid JSON'**
+  String get validJson;
+
+  /// No description provided for @format.
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get format;
+
+  /// No description provided for @editorOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} Editor'**
+  String editorOf(Object type);
 }
 
 class _LocalConfigLocalizationsDelegate

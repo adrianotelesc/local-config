@@ -10,11 +10,13 @@ import 'package:re_highlight/styles/atom-one-dark.dart';
 class TextEditor extends StatefulWidget {
   const TextEditor({
     super.key,
-    this.text = '',
+    this.value = '',
+    required this.title,
     required this.controller,
   });
 
-  final String text;
+  final String title;
+  final String value;
   final TextEditorController controller;
 
   @override
@@ -29,7 +31,7 @@ class _TextEditorState extends State<TextEditor> {
   @override
   void initState() {
     super.initState();
-    _textController.text = widget.controller.prettify(widget.text);
+    _textController.text = widget.controller.prettify(widget.value);
     _textController.addListener(_updateValidState);
     _isValid = widget.controller.validate(_textController.text);
   }
@@ -48,7 +50,7 @@ class _TextEditorState extends State<TextEditor> {
       data: defaultTheme,
       child: Scaffold(
         appBar: _AppBar(
-          title: widget.controller.title,
+          title: widget.title,
           onCloseClick: pop,
           onSaveClick: _isValid ?? true ? popAndResult : null,
         ),
@@ -73,7 +75,7 @@ class _TextEditorState extends State<TextEditor> {
   void pop() {
     Navigator.maybePop(
       context,
-      widget.text,
+      widget.value,
     );
   }
 

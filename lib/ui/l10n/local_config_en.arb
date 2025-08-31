@@ -22,5 +22,8 @@
     "invalidBoolean": "Invalid Boolean",
     "invalidNumber": "Invalid Number",
     "invalidJson": "Invalid JSON",
-    "help": "This is the key you'll pass to the Local Config SDK,\nfor example:\n"
+    "help": "This is the key you'll pass to the Local Config SDK,\nfor example:\n",
+    "validJson": "Valid JSON",
+    "format": "Format",
+    "editorOf": "{type} Editor"
 }

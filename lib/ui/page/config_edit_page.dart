@@ -201,7 +201,11 @@ class _Form extends StatelessWidget {
                               fullscreenDialog: true,
                               builder: (_) {
                                 return TextEditor(
-                                  text: controller.text,
+                                  value: controller.text,
+                                  title: LocalConfigLocalizations.of(context)!
+                                      .editorOf(
+                                        config.type.getDisplayName(context),
+                                      ),
                                   controller: config.type.textEditorController,
                                 );
                               },
