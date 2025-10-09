@@ -9,5 +9,5 @@ abstract class ConfigDataSource {
 
   Future<void> clear();
 
-  Future<void> prune(Set<String> keysToRetain);
+  Future<void> prune(Set<String> retainedKeys);
 }

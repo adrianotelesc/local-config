@@ -9,7 +9,7 @@ import 'package:local_config/infra/storage/shared_preferences_key_value_store.da
 import 'package:local_config/ui/local_config_entrypoint.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:local_config/data/data_source/default_config_data_source.dart';
+import 'package:local_config/data/data_source/local_config_data_source.dart';
 import 'package:local_config/data/repository/default_config_repository.dart';
 import 'package:local_config/data/repository/no_op_config_repository.dart';
 import 'package:local_config/domain/data_source/config_data_source.dart';
@@ -65,7 +65,7 @@ class LocalConfig {
 
     _serviceLocator
       ..registerFactory<ConfigDataSource>(
-        () => DefaultConfigDataSource(
+        () => LocalConfigDataSource(
           keyValueStore: _serviceLocator.get(),
         ),
       )
