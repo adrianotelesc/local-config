@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 extension StringExtension on String {
-  Map<String, dynamic>? get asJson {
+  Map<String, dynamic>? get asMapOrNull {
     try {
       return jsonDecode(this);
     } catch (_) {
@@ -9,13 +9,12 @@ extension StringExtension on String {
     }
   }
 
-  bool? get asBool => bool.tryParse(this);
+  bool? get asBoolOrNull => bool.tryParse(this);
 
-  double? get asDouble => double.tryParse(this);
+  double? get asDoubleOrNull => double.tryParse(this);
 
-  int? get asInt => int.tryParse(this);
+  int? get asIntOrNull => int.tryParse(this);
 
-  bool containsInsensitive(String substring) {
-    return toLowerCase().contains(substring.toLowerCase());
-  }
+  bool containsInsensitive(String substring) =>
+      toLowerCase().contains(substring.toLowerCase());
 }

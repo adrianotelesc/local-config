@@ -14,9 +14,9 @@ class Config {
       overriddenValue != null && overriddenValue != defaultValue;
 
   ConfigType get type {
-    if (defaultValue.asBool != null) return ConfigType.boolean;
-    if (defaultValue.asDouble != null) return ConfigType.number;
-    if (defaultValue.asJson != null) return ConfigType.json;
+    if (defaultValue.asBoolOrNull != null) return ConfigType.boolean;
+    if (defaultValue.asDoubleOrNull != null) return ConfigType.number;
+    if (defaultValue.asMapOrNull != null) return ConfigType.json;
     return ConfigType.string;
   }
 
