@@ -1,14 +1,15 @@
 library local_config;
 
 import 'package:flutter/material.dart';
+import 'package:local_config/data/util/key_namespace.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:local_config/core/di/service_locator.dart';
 import 'package:local_config/core/storage/key_value_store.dart';
 import 'package:local_config/infra/storage/secure_storage_key_value_store.dart';
 import 'package:local_config/infra/storage/shared_preferences_key_value_store.dart';
 import 'package:local_config/ui/local_config_entrypoint.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_config/data/data_source/local_config_data_source.dart';
 import 'package:local_config/data/repository/default_config_repository.dart';
 import 'package:local_config/data/repository/no_op_config_repository.dart';
@@ -18,6 +19,8 @@ import 'package:local_config/common/extension/string_extension.dart';
 import 'package:local_config/infra/di/get_it_service_locator.dart';
 
 class LocalConfig {
+  static const _namespace = 'local_config';
+
   static final instance = LocalConfig._();
 
   final _serviceLocator = GetItServiceLocator();
@@ -66,6 +69,9 @@ class LocalConfig {
     _serviceLocator
       ..registerFactory<ConfigDataSource>(
         () => LocalConfigDataSource(
+          keyNamespace: KeyNamespace(
+            namespace: _namespace,
+          ),
           keyValueStore: _serviceLocator.get(),
         ),
       )

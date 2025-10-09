@@ -1,27 +1,50 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:local_config/data/util/key_namespace.dart';
 import 'package:local_config/data/data_source/local_config_data_source.dart';
 import 'package:local_config/core/storage/key_value_store.dart';
 
 class MockKeyValueStore extends Mock implements KeyValueStore {}
 
+class MockKeyNamespace extends Mock implements KeyNamespace {}
+
+const namespace = 'test';
+
 void main() {
+  late MockKeyNamespace mockKeyNamespace;
+
   late MockKeyValueStore mockKeyValueStore;
+
   late LocalConfigDataSource dataSource;
 
   setUp(() {
+    mockKeyNamespace = MockKeyNamespace();
+
     mockKeyValueStore = MockKeyValueStore();
-    dataSource = LocalConfigDataSource(keyValueStore: mockKeyValueStore);
+
+    dataSource = LocalConfigDataSource(
+      keyNamespace: mockKeyNamespace,
+      keyValueStore: mockKeyValueStore,
+    );
   });
 
   group('LocalConfigDataSource.all', () {
     test('returns only namespaced keys with prefix removed', () async {
-      const allData = {
+      const all = {
         'local_config:foo': 'bar',
         'other:key': 'value',
       };
 
-      when(() => mockKeyValueStore.all).thenAnswer((_) async => allData);
+      when(() => mockKeyValueStore.all).thenAnswer((_) async => all);
+      when(
+        () => mockKeyNamespace.matches('local_config:foo'),
+      ).thenAnswer((_) => true);
+      when(
+        () => mockKeyNamespace.matches('other:key'),
+      ).thenAnswer((_) => false);
+      when(
+        () => mockKeyNamespace.strip('local_config:foo'),
+      ).thenAnswer((_) => 'foo');
 
       final result = await dataSource.all;
 
@@ -31,9 +54,12 @@ void main() {
     });
 
     test('returns empty map if no namespaced keys', () async {
-      const allData = {'other:key': 'value'};
+      const all = {'other:key': 'value'};
 
-      when(() => mockKeyValueStore.all).thenAnswer((_) async => allData);
+      when(() => mockKeyValueStore.all).thenAnswer((_) async => all);
+      when(
+        () => mockKeyNamespace.matches('other:key'),
+      ).thenAnswer((_) => false);
 
       final result = await dataSource.all;
 
@@ -49,6 +75,9 @@ void main() {
       when(
         () => mockKeyValueStore.getString('local_config:foo'),
       ).thenAnswer((_) async => value);
+      when(
+        () => mockKeyNamespace.apply(key),
+      ).thenReturn('local_config:foo');
 
       final result = await dataSource.get(key);
 
@@ -65,6 +94,9 @@ void main() {
       when(
         () => mockKeyValueStore.setString('local_config:foo', value),
       ).thenAnswer((_) async {});
+      when(
+        () => mockKeyNamespace.apply(key),
+      ).thenReturn('local_config:foo');
 
       await dataSource.set(key, value);
 
@@ -81,6 +113,9 @@ void main() {
       when(
         () => mockKeyValueStore.remove('local_config:foo'),
       ).thenAnswer((_) async {});
+      when(
+        () => mockKeyNamespace.apply(key),
+      ).thenReturn('local_config:foo');
 
       await dataSource.remove(key);
 
@@ -90,50 +125,98 @@ void main() {
 
   group('LocalConfigDataSource.clear', () {
     test('removes all namespaced keys', () async {
-      const allData = {
-        'local_config:a': '1',
-        'local_config:b': '2',
-        'other:key': 'x',
+      const all = {
+        'local_config:foo': 'bar',
+        'other:key': 'value',
       };
 
-      when(() => mockKeyValueStore.all).thenAnswer((_) async => allData);
-      when(() => mockKeyValueStore.remove(any())).thenAnswer((_) async {});
+      when(() => mockKeyValueStore.all).thenAnswer((_) async => all);
+      when(
+        () => mockKeyNamespace.matches('local_config:foo'),
+      ).thenAnswer((_) => true);
+      when(
+        () => mockKeyNamespace.matches('other:key'),
+      ).thenAnswer((_) => false);
+      when(
+        () => mockKeyNamespace.strip('local_config:foo'),
+      ).thenAnswer((_) => 'foo');
+      when(
+        () => mockKeyNamespace.apply('foo'),
+      ).thenAnswer((_) => 'local_config:foo');
+      when(
+        () => mockKeyValueStore.remove('local_config:foo'),
+      ).thenAnswer((_) async {});
 
       await dataSource.clear();
 
-      verify(() => mockKeyValueStore.remove('local_config:a')).called(1);
-      verify(() => mockKeyValueStore.remove('local_config:b')).called(1);
+      verify(() => mockKeyValueStore.remove('local_config:foo')).called(1);
       verifyNever(() => mockKeyValueStore.remove('other:key'));
+    });
+
+    test('does nothing if no namespaced keys exist', () async {
+      when(() => mockKeyValueStore.all).thenAnswer((_) async => {});
+      when(() => mockKeyNamespace.matches(any())).thenReturn(false);
+
+      await dataSource.clear();
+
+      verifyNever(() => mockKeyValueStore.remove(any()));
     });
   });
 
   group('LocalConfigDataSource.prune', () {
     test('removes keys not in retainedKeys', () async {
-      const allData = {
-        'local_config:a': '1',
-        'local_config:b': '2',
-        'local_config:c': '3',
+      const all = {
+        'local_config:foo': 'bar',
+        'local_config:baz': 'qux',
       };
-      const retainedKeys = {'b', 'c'};
+      const retainedKeys = {'baz'};
 
-      when(() => mockKeyValueStore.all).thenAnswer((_) async => allData);
-      when(() => mockKeyValueStore.remove(any())).thenAnswer((_) async {});
+      when(() => mockKeyValueStore.all).thenAnswer((_) async => all);
+      when(
+        () => mockKeyNamespace.matches('local_config:foo'),
+      ).thenAnswer((_) => true);
+      when(
+        () => mockKeyNamespace.matches('local_config:baz'),
+      ).thenAnswer((_) => true);
+      when(
+        () => mockKeyNamespace.strip('local_config:foo'),
+      ).thenAnswer((_) => 'foo');
+      when(
+        () => mockKeyNamespace.strip('local_config:baz'),
+      ).thenAnswer((_) => 'baz');
+      when(
+        () => mockKeyNamespace.apply('foo'),
+      ).thenAnswer((_) => 'local_config:foo');
+      when(
+        () => mockKeyValueStore.remove('local_config:foo'),
+      ).thenAnswer((_) async {});
 
       await dataSource.prune(retainedKeys);
 
-      verify(() => mockKeyValueStore.remove('local_config:a')).called(1);
-      verifyNever(() => mockKeyValueStore.remove('local_config:b'));
-      verifyNever(() => mockKeyValueStore.remove('local_config:c'));
+      verify(() => mockKeyValueStore.remove('local_config:foo')).called(1);
+      verifyNever(() => mockKeyValueStore.remove('local_config:baz'));
     });
 
     test('does not remove anything if all keys are retained', () async {
-      const allData = {
-        'local_config:a': '1',
-        'local_config:b': '2',
+      const all = {
+        'local_config:foo': 'bar',
+        'local_config:baz': 'qux',
       };
-      const retainedKeys = {'a', 'b'};
+      const retainedKeys = {'foo', 'baz'};
 
-      when(() => mockKeyValueStore.all).thenAnswer((_) async => allData);
+      when(() => mockKeyValueStore.all).thenAnswer((_) async => all);
+      when(
+        () => mockKeyNamespace.matches('local_config:foo'),
+      ).thenAnswer((_) => true);
+      when(
+        () => mockKeyNamespace.matches('local_config:baz'),
+      ).thenAnswer((_) => true);
+      when(
+        () => mockKeyNamespace.strip('local_config:foo'),
+      ).thenAnswer((_) => 'foo');
+      when(
+        () => mockKeyNamespace.strip('local_config:baz'),
+      ).thenAnswer((_) => 'baz');
       when(() => mockKeyValueStore.remove(any())).thenAnswer((_) async {});
 
       await dataSource.prune(retainedKeys);
