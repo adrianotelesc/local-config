@@ -10,12 +10,10 @@ import 'package:local_config/ui/local_config_routes.dart';
 import 'package:local_config/ui/theming/styles.dart';
 import 'package:local_config/ui/extension/config_display_extension.dart';
 import 'package:local_config/ui/theming/theme.dart';
-import 'package:local_config/ui/widget/animated_floating_text.dart';
 import 'package:local_config/ui/widget/callout.dart';
 import 'package:local_config/domain/model/config.dart';
 import 'package:local_config/ui/widget/extended_list_tile.dart';
 import 'package:local_config/ui/widget/clearable_search_bar.dart';
-import 'package:local_config/ui/widget/animated_jitter_text.dart';
 import 'package:provider/provider.dart';
 
 class ConfigListPage extends StatefulWidget {
@@ -163,7 +161,7 @@ class _PendingStatusNotice extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 24,
           children: [
-            AnimatedJitterText(
+            Text(
               LocalConfigLocalizations.of(context)!.noConfigsQuestion,
               style: Theme.of(context).textTheme.titleLarge,
             ),
@@ -237,7 +235,7 @@ class _PendingStatusNotice extends StatelessWidget {
                       const TextSpan(text: ' '),
                       WidgetSpan(
                         alignment: PlaceholderAlignment.middle,
-                        child: AnimatedFloatingText(
+                        child: Text(
                           LocalConfigLocalizations.of(
                             context,
                           )!.loadingQuestion,
@@ -315,7 +313,7 @@ class _List extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 16,
             children: [
-              AnimatedFloatingText(
+              Text(
                 LocalConfigLocalizations.of(context)!.noResults,
                 style: Theme.of(context).textTheme.displaySmall,
               ),
