@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:local_config/domain/data_source/config_data_source.dart';
 import 'package:local_config/domain/model/config.dart';
 import 'package:local_config/domain/repository/config_repository.dart';
-import 'package:local_config/domain/data_source/config_data_source.dart';
 
 class DefaultConfigRepository implements ConfigRepository {
   final ConfigDataSource _dataSource;
@@ -22,9 +22,35 @@ class DefaultConfigRepository implements ConfigRepository {
   Stream<Map<String, Config>> get configsStream => _controller.stream;
 
   @override
+  Config? get(String key) => _configs[key];
+
+  @override
   Future<void> populate(Map<String, String> configs) async {
     _populate(configs);
     await _dataSource.prune(configs.keys.toSet());
+  }
+
+  @override
+  Future<void> reset(String key) async {
+    _update(key, null);
+    await _dataSource.remove(key);
+  }
+
+  @override
+  Future<void> resetAll() async {
+    _updateAll();
+    await _dataSource.clear();
+  }
+
+  @override
+  Future<void> set(String key, String value) async {
+    final updated = _update(key, value);
+
+    if (!updated.isOverridden) {
+      await _dataSource.remove(key);
+    } else {
+      await _dataSource.set(key, value);
+    }
   }
 
   Future<void> _populate(Map<String, String> all) async {
@@ -43,38 +69,12 @@ class DefaultConfigRepository implements ConfigRepository {
     _controller.add(configs);
   }
 
-  @override
-  Config? get(String key) => _configs[key];
-
-  @override
-  Future<void> set(String key, String value) async {
-    final updated = _update(key, value);
-
-    if (!updated.isOverridden) {
-      await _dataSource.remove(key);
-    } else {
-      await _dataSource.set(key, value);
-    }
-  }
-
   Config _update(String key, String? value) {
     final updated = _configs.update(key, (config) {
       return config.copyWith(overriddenValue: value);
     });
     _controller.add(configs);
     return updated;
-  }
-
-  @override
-  Future<void> reset(String key) async {
-    _update(key, null);
-    await _dataSource.remove(key);
-  }
-
-  @override
-  Future<void> resetAll() async {
-    _updateAll();
-    await _dataSource.clear();
   }
 
   void _updateAll() {
