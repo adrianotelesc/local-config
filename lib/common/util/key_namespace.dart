@@ -11,11 +11,11 @@ class KeyNamespace {
        _namespace = namespace,
        _separator = separator;
 
-  get _keyPrefix => '$_namespace$_separator';
+  String get _prefix => '$_namespace$_separator';
 
-  String apply(String key) => '$_keyPrefix$key';
+  String apply(String key) => '$_prefix$key';
 
-  bool matches(String key) => key.startsWith(_keyPrefix);
+  bool matches(String key) => key.startsWith(_prefix);
 
-  String strip(String key) => key.replaceFirst(_keyPrefix, '');
+  String strip(String key) => key.replaceFirst(_prefix, '');
 }
