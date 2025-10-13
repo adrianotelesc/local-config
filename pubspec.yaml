@@ -1,7 +1,17 @@
 name: local_config
-description: Make changes to your app's default behavior and appearance by changing parameter values — just like Firebase Remote Config, but locally.
-version: 0.0.1
+description: |
+  Make changes to your app's default behavior 
+  and appearance by changing parameter values 
+  — just like Firebase Remote Config, but locally.
+version: 0.0.2
+topics:
+  - local
+  - config
+  - management
+  - persistence
+  - storage
 repository: https://github.com/adrianotelesc/local-config
+issue_tracker: https://github.com/adrianotelesc/local-config/issues
 
 environment:
   sdk: ^3.7.0
