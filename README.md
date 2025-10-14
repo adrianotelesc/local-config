@@ -1,6 +1,6 @@
 # Local Config
 
-Make changes to your app's default behavior and appearance by changing parameter values — just like Firebase Remote Config, but locally. It’s designed for developers who want flexibility during **development**, **testing**, and **staging** workflows where they can override parameter values, test feature flags, or simulate Remote Config behavior directly on your device.
+Make changes to your app's default behavior and appearance by changing parameter values — just like Firebase Remote Config, but locally. It’s designed for teams that need flexibility to override parameters, test feature flags, and simulate Remote Config behavior directly on their devices.
 
 ---
 
