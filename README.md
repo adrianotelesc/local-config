@@ -33,7 +33,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await LocalConfig.instance.initialize(
-    defaults: {
+    parameters: {
         'feature_enabled': 'true',
         'api_base_url': 'https://api.myapp.com/v1',
         'retry_attempts': '3',
@@ -42,7 +42,7 @@ void main() async {
     },
   );
 
-  runApp(const YourApp());
+  runApp(const ExampleApp());
 }
 ```
 
@@ -64,7 +64,7 @@ void main() async {
     ),
   );
 
-  runApp(const YourApp());
+  runApp(const ExampleApp());
 }
 ```
 

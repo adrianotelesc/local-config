@@ -5,13 +5,17 @@ import 'package:local_config/local_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final configs = <String, String>{
-    'config_string': 'Local Config Example',
-    'config_number': '1',
-    'config_boolean': 'false',
-    'config_json': '{}',
-  };
-  LocalConfig.instance.initialize(defaults: configs);
+
+  LocalConfig.instance.initialize(
+    parameters: {
+      'feature_enabled': 'true',
+      'api_base_url': 'https://api.myapp.com/v1',
+      'retry_attempts': '3',
+      'animation_speed': '1.25',
+      'theme': '{"seedColor": "#2196F3", "darkMode": false}',
+    },
+  );
+
   runApp(const ExampleApp());
 }
 

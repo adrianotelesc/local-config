@@ -14,7 +14,7 @@ class LocalConfig {
   }
 
   void initialize({
-    required Map<String, String> defaults,
+    required Map<String, String> parameters,
     bool isSecureStorageEnabled = false,
   }) {
     _serviceLocator
@@ -48,7 +48,7 @@ class LocalConfig {
         () => DefaultConfigRepository(
           dataSource: _serviceLocator.get(),
           store: _serviceLocator.get(),
-        )..populate(defaults),
+        )..populate(parameters),
       );
   }
 
