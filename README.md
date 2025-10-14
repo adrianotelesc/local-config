@@ -16,9 +16,14 @@
 
 ## 🚀 Getting Started
 
-### Initialization
+#### Add dependency
 
-#### Initialize with your values
+```yaml
+dependencies:
+  local_config: ^0.0.2
+```
+
+#### Initialize with your parameters
 
 ```dart
 import 'package:flutter/material.dart';
@@ -29,11 +34,11 @@ void main() async {
 
   await LocalConfig.instance.initialize(
     defaults: {
-        'feature_home_banner_enabled': 'true',
+        'feature_enabled': 'true',
         'api_base_url': 'https://api.myapp.com/v1',
         'retry_attempts': '3',
-        'welcome_message': 'Welcome to MyApp!',
-        'theme': '{"primaryColor": "#2196F3", "darkMode": false}',
+        'animation_speed': '1.25',
+        'theme': '{"seedColor": "#2196F3", "darkMode": false}',
     },
   );
 
@@ -41,7 +46,7 @@ void main() async {
 }
 ```
 
-#### Initialize with Remote Config values
+#### Or with the `FirebaseRemoteConfig` parameters
 
 ```dart
 import 'package:flutter/material.dart';
@@ -63,45 +68,40 @@ void main() async {
 }
 ```
 
----
-
-### Navigating to the Built-in Config Screen
+#### Navigate to entrypoint widget
 
 ```dart
 FilledButton(
   onPressed: () {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => LocalConfig.instance.entrypoint,
+        builder: (_) => LocalConfigEntrypoint(),
       ),
     );
   },
-  child: const Text('Go to Local Config'),
+  child: const Text('Local Config'),
 )
 ```
 
----
-
-## 💡 Usage Example
-
-You can access your config values anywhere after initialization:
+#### Get parameter values
 
 ```dart
-final message = LocalConfig.instance.getString('config_string');
-final delay = LocalConfig.instance.getInt('config_number');
-final enabled = LocalConfig.instance.getBool('config_boolean');
-final json = LocalConfig.instance.getJson('config_json');
+final featureEnabled = LocalConfig.instance.getBool('feature_enabled');
+final apiBaseUrl = LocalConfig.instance.getString('api_base_url');
+final retryAttempts = LocalConfig.instance.getInt('retry_attempts');
+final animatinoSpeed = LocalConfig.instance.getDouble('animation_speed');
+final theme = LocalConfig.instance.getString('theme');
 ```
 
-Or listen to changes (if your implementation supports it):
+#### Or listen for updates in real time
 
 ```dart
-LocalConfig.instance.stream.listen((configs) {
+LocalConfig.instance.onConfigUpdated.listen((configs) {
   print('Configs updated: $configs');
 });
 ```
 
-For a full demo, check the `/example` folder.
+For a full demo, check the [`example`](https://github.com/adrianotelesc/local-config/tree/main/example) folder.
 
 ---
 
