@@ -33,20 +33,19 @@ class InputFormField extends StatelessWidget {
         label,
         entries.isNotEmpty
             ? _DropdownMenu(
-                enabled: enabled,
-                controller: controller,
-                entries: entries,
-                textInputAction: textInputAction,
-              )
+              enabled: enabled,
+              controller: controller,
+              entries: entries,
+            )
             : _TextFormField(
-                controller: controller,
-                suffixIcon: suffixIcon,
-                textInputAction: textInputAction,
-                autofocus: autofocus,
-                onFieldSubmitted: onFieldSubmitted,
-                validator: validator,
-                enabled: enabled,
-              ),
+              controller: controller,
+              suffixIcon: suffixIcon,
+              textInputAction: textInputAction,
+              autofocus: autofocus,
+              onFieldSubmitted: onFieldSubmitted,
+              validator: validator,
+              enabled: enabled,
+            ),
       ],
     );
   }
@@ -93,27 +92,25 @@ class _DropdownMenu extends StatelessWidget {
   final bool enabled;
   final TextEditingController controller;
   final List<DropdownMenuEntry<String>> entries;
-  final TextInputAction? textInputAction;
 
   const _DropdownMenu({
     this.enabled = true,
     required this.controller,
     required this.entries,
-    this.textInputAction,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownMenu(
       enabled: enabled,
-      leadingIcon: entries
-          .where((item) => item.value == controller.text)
-          .firstOrNull
-          ?.leadingIcon,
+      leadingIcon:
+          entries
+              .where((item) => item.value == controller.text)
+              .firstOrNull
+              ?.leadingIcon,
       controller: controller,
       expandedInsets: EdgeInsets.zero,
       dropdownMenuEntries: entries,
-      textInputAction: textInputAction,
     );
   }
 }

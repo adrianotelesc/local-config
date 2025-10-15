@@ -3,7 +3,7 @@ description: |
   Make changes to your app's default behavior 
   and appearance by changing parameter values 
   — just like Firebase Remote Config, but locally.
-version: 0.0.2
+version: 0.0.3
 topics:
   - local
   - config
@@ -36,5 +36,5 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^5.0.0
   mocktail: ^1.0.4
