@@ -6,9 +6,7 @@ import 'package:local_config/src/ui/page/config_edit_page.dart';
 import 'package:local_config/src/ui/page/config_list_page.dart';
 
 class LocalConfigEntrypoint extends StatelessWidget {
-  const LocalConfigEntrypoint({
-    super.key,
-  });
+  const LocalConfigEntrypoint({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +28,7 @@ class LocalConfigEntrypoint extends StatelessWidget {
             LocalConfigRoutes.configEdit => MaterialPageRoute(
               fullscreenDialog: true,
               builder: (_) {
-                return ConfigEditPage(
-                  name: settings.arguments.toString(),
-                );
+                return ConfigEditPage(name: settings.arguments.toString());
               },
             ),
             _ => null,

@@ -14,6 +14,7 @@ import 'package:local_config/src/ui/widget/callout.dart';
 import 'package:local_config/src/domain/entity/config.dart';
 import 'package:local_config/src/ui/widget/extended_list_tile.dart';
 import 'package:local_config/src/ui/widget/clearable_search_bar.dart';
+import 'package:local_config/src/ui/widget/root_aware_sliver_app_bar.dart';
 import 'package:provider/provider.dart';
 
 class ConfigListPage extends StatefulWidget {
@@ -83,20 +84,12 @@ class _ConfigListPageState extends State<ConfigListPage> {
           return Scaffold(
             body: CustomScrollView(
               slivers: [
-                _AppBar(
-                  hasOverrides: _hasOverrides,
-                  repo: _repo,
-                ),
+                _AppBar(hasOverrides: _hasOverrides, repo: _repo),
                 if (_configs.isEmpty)
                   const _PendingStatusNotice()
                 else ...[
-                  _SearchBar(
-                    controller: _controller,
-                  ),
-                  _List(
-                    items: _items,
-                    repo: _repo,
-                  ),
+                  _SearchBar(controller: _controller),
+                  _List(items: _items, repo: _repo),
                 ],
               ],
             ),
@@ -111,14 +104,11 @@ class _AppBar extends StatelessWidget {
   final bool hasOverrides;
   final ConfigRepository repo;
 
-  const _AppBar({
-    required this.hasOverrides,
-    required this.repo,
-  });
+  const _AppBar({required this.hasOverrides, required this.repo});
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
+    return RootAwareSliverAppBar(
       title: Text(LocalConfigLocalizations.of(context)!.localConfig),
       centerTitle: false,
       floating: true,
@@ -126,15 +116,10 @@ class _AppBar extends StatelessWidget {
       bottom:
           hasOverrides
               ? PreferredSize(
-                preferredSize: const Size.fromHeight(
-                  Callout.defaultHeight,
-                ),
+                preferredSize: const Size.fromHeight(Callout.defaultHeight),
                 child: Callout.warning(
                   icon: Icons.error,
-                  text:
-                      LocalConfigLocalizations.of(
-                        context,
-                      )!.changesApplied,
+                  text: LocalConfigLocalizations.of(context)!.changesApplied,
                   trailing: TextButton(
                     onPressed: repo.resetAll,
                     style: warningButtonStyle(context),
@@ -171,10 +156,7 @@ class _PendingStatusNotice extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text:
-                        LocalConfigLocalizations.of(
-                          context,
-                        )!.possibleCauses,
+                    text: LocalConfigLocalizations.of(context)!.possibleCauses,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const TextSpan(text: '\n\n'),
@@ -251,10 +233,7 @@ class _PendingStatusNotice extends StatelessWidget {
                             LocalConfigLocalizations.of(
                               context,
                             )!.openGitHubIssue,
-                        style:
-                            Theme.of(
-                              context,
-                            ).textTheme.bodyMedium,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
                   ),
@@ -271,18 +250,13 @@ class _PendingStatusNotice extends StatelessWidget {
 class _SearchBar extends StatelessWidget {
   final TextEditingController controller;
 
-  const _SearchBar({
-    required this.controller,
-  });
+  const _SearchBar({required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: ClearableSearchBar(
           controller: controller,
           hintText: LocalConfigLocalizations.of(context)!.search,
@@ -296,10 +270,7 @@ class _List extends StatelessWidget {
   final List<(String, Config)> items;
   final ConfigRepository repo;
 
-  const _List({
-    required this.items,
-    required this.repo,
-  });
+  const _List({required this.items, required this.repo});
 
   @override
   Widget build(BuildContext context) {
@@ -346,9 +317,7 @@ class _List extends StatelessWidget {
           top:
               isOverridden
                   ? Callout.warning(
-                    style: CalloutStyle(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    style: CalloutStyle(borderRadius: BorderRadius.circular(8)),
                     icon: Icons.error,
                     text: LocalConfigLocalizations.of(context)!.changed,
                     trailing: TextButton(
@@ -360,10 +329,9 @@ class _List extends StatelessWidget {
                   : null,
           trailing: IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(
-                LocalConfigRoutes.configEdit,
-                arguments: name,
-              );
+              Navigator.of(
+                context,
+              ).pushNamed(LocalConfigRoutes.configEdit, arguments: name);
             },
             icon: const Icon(Icons.edit),
           ),

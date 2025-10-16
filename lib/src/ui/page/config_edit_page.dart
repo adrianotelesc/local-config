@@ -4,6 +4,7 @@ import 'package:local_config/src/domain/repository/config_repository.dart';
 import 'package:local_config/src/ui/extension/config_display_extension.dart';
 import 'package:local_config/src/domain/entity/config.dart';
 import 'package:local_config/src/ui/l10n/local_config_localizations.dart';
+import 'package:local_config/src/ui/widget/root_aware_sliver_app_bar.dart';
 import 'package:local_config/src/ui/widget/text_editor/text_editor.dart';
 import 'package:local_config/src/ui/theming/theme.dart';
 import 'package:local_config/src/ui/widget/input_form_field.dart';
@@ -12,10 +13,7 @@ import 'package:provider/provider.dart';
 class ConfigEditPage extends StatefulWidget {
   final String name;
 
-  const ConfigEditPage({
-    super.key,
-    required this.name,
-  });
+  const ConfigEditPage({super.key, required this.name});
 
   @override
   State<StatefulWidget> createState() => _ConfigEditPageState();
@@ -86,7 +84,7 @@ class _AppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
+    return RootAwareSliverAppBar(
       title: Text(LocalConfigLocalizations.of(context)!.editParameter),
       actionsPadding: const EdgeInsets.all(8),
       actions: [
@@ -132,9 +130,7 @@ class _Form extends StatelessWidget {
             spacing: 16,
             children: [
               InputFormField(
-                controller: TextEditingController(
-                  text: name,
-                ),
+                controller: TextEditingController(text: name),
                 label: Tooltip(
                   preferBelow: true,
                   showDuration: const Duration(seconds: 5),
@@ -150,10 +146,7 @@ class _Form extends StatelessWidget {
                         LocalConfigLocalizations.of(context)!.parameterName,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      const Icon(
-                        Icons.help_outline,
-                        size: 16,
-                      ),
+                      const Icon(Icons.help_outline, size: 16),
                     ],
                   ),
                 ),
@@ -182,10 +175,7 @@ class _Form extends StatelessWidget {
                 controller: controller,
                 entries:
                     config.type.presets.map((item) {
-                      return DropdownMenuEntry(
-                        value: item,
-                        label: item,
-                      );
+                      return DropdownMenuEntry(value: item, label: item);
                     }).toList(),
                 autofocus: true,
                 onFieldSubmitted: (_) {
