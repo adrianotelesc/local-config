@@ -6,7 +6,7 @@ void main() {
     final map = {'a': 1, 'b': 2, 'c': 3};
 
     test('returns filtered Map by key', () {
-      final result = map.whereKey((key) => key != 'b');
+      final result = map.where((key, value) => key != 'b');
 
       expect(result.length, 2);
       expect(result.containsKey('a'), isTrue);
@@ -15,13 +15,13 @@ void main() {
     });
 
     test('returns empty map when no keys pass test', () {
-      final result = map.whereKey((key) => key == 'z');
+      final result = map.where((key, value) => key == 'z');
 
       expect(result, isEmpty);
     });
 
     test('returns full map when all keys pass test', () {
-      final result = map.whereKey((key) => true);
+      final result = map.where((key, value) => true);
 
       expect(result, map);
     });
