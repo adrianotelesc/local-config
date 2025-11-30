@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_config/src/data/store/config_store.dart';
 import 'package:local_config/src/data/store/default_config_store.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:local_config/src/common/extension/string_extension.dart';
 import 'package:local_config/src/core/di/service_locator.dart';
 import 'package:local_config/src/core/service/key_value_service.dart';
 import 'package:local_config/src/data/data_source/default_key_value_data_source.dart';
@@ -14,9 +12,11 @@ import 'package:local_config/src/data/data_source/key_value_data_source.dart';
 import 'package:local_config/src/domain/repository/config_repository.dart';
 import 'package:local_config/src/infra/di/get_it_service_locator.dart';
 import 'package:local_config/src/infra/service/namespaced_key_value_service.dart';
-import 'package:local_config/src/infra/service/secure_storage_key_value_service.dart';
 import 'package:local_config/src/infra/service/shared_preferences_key_value_service.dart';
 import 'package:local_config/src/common/util/key_namespace.dart';
 import 'package:local_config/src/ui/local_config_entrypoint.dart';
+
+export 'package:local_config/src/infra/service/shared_preferences_key_value_service.dart';
+export 'package:local_config/src/infra/service/secure_storage_key_value_service.dart';
 
 part 'src/local_config.dart';

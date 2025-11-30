@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_config/local_config.dart';
 
 void main() async {
@@ -19,6 +20,11 @@ void main() async {
       'animation_speed_string': '1.25',
       'theme_string': '{"seedColor": "#2196F3", "darkMode": false}',
     },
+    keyValueService: SecureStorageKeyValueService(
+      secureStorage: const FlutterSecureStorage(
+        aOptions: AndroidOptions(encryptedSharedPreferences: true),
+      ),
+    ),
   );
 
   runApp(const ExampleApp());

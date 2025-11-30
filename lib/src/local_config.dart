@@ -1,87 +1,80 @@
 part of '../local_config.dart';
 
-class LocalConfig {
+final class LocalConfig {
   static const _namespace = 'local_config';
 
   static final instance = LocalConfig._();
 
-  final _serviceLocator = GetItServiceLocator();
+  final _locator = GetItServiceLocator();
 
   LocalConfig._() {
-    _serviceLocator.registerLazySingleton<ConfigRepository>(
+    _locator.registerLazySingleton<ConfigRepository>(
       () => NoOpConfigRepository(),
     );
   }
 
   void initialize({
     required Map<String, dynamic> parameters,
-    bool isSecureStorageEnabled = false,
+    KeyValueService? keyValueService,
   }) {
-    _serviceLocator
+    _locator
       ..registerFactory<KeyValueService>(
         () => NamespacedKeyValueService(
           namespace: KeyNamespace(namespace: _namespace),
           inner:
-              isSecureStorageEnabled
-                  ? SecureStorageKeyValueService(
-                    secureStorage: const FlutterSecureStorage(
-                      aOptions: AndroidOptions(
-                        encryptedSharedPreferences: true,
-                      ),
-                    ),
-                  )
-                  : SharedPreferencesKeyValueService(
-                    sharedPreferences: SharedPreferencesAsync(),
-                  ),
+              keyValueService ??
+              SharedPreferencesKeyValueService(
+                sharedPreferences: SharedPreferencesAsync(),
+              ),
         ),
       )
       ..registerFactory<KeyValueDataSource>(
-        () => DefaultKeyValueDataSource(service: _serviceLocator.get()),
+        () => DefaultKeyValueDataSource(service: _locator.get()),
       )
       ..registerFactory<ConfigStore>(() => DefaultConfigStore())
       ..unregister<ConfigRepository>()
       ..registerLazySingleton<ConfigRepository>(
         () => DefaultConfigRepository(
-          dataSource: _serviceLocator.get(),
-          store: _serviceLocator.get(),
+          dataSource: _locator.get(),
+          store: _locator.get(),
         )..populate(parameters),
       );
   }
 
   Widget get entrypoint {
     return Provider<ServiceLocator>(
-      create: (_) => _serviceLocator,
+      create: (_) => _locator,
       child: const LocalConfigEntrypoint(),
     );
   }
 
   Stream<Map<String, dynamic>> get onConfigUpdated {
-    final repo = _serviceLocator.get<ConfigRepository>();
+    final repo = _locator.get<ConfigRepository>();
     return repo.configsStream.map((configs) {
       return configs.map((key, config) => MapEntry(key, config.value));
     });
   }
 
   bool? getBool(String key) {
-    final repo = _serviceLocator.get<ConfigRepository>();
+    final repo = _locator.get<ConfigRepository>();
     final config = repo.get(key);
     return config?.value.asBoolOrNull;
   }
 
   double? getDouble(String key) {
-    final repo = _serviceLocator.get<ConfigRepository>();
+    final repo = _locator.get<ConfigRepository>();
     final config = repo.get(key);
     return config?.value.asDoubleOrNull;
   }
 
   int? getInt(String key) {
-    final repo = _serviceLocator.get<ConfigRepository>();
+    final repo = _locator.get<ConfigRepository>();
     final config = repo.get(key);
     return config?.value.asIntOrNull;
   }
 
   String? getString(String key) {
-    final repo = _serviceLocator.get<ConfigRepository>();
+    final repo = _locator.get<ConfigRepository>();
     final config = repo.get(key);
     return config?.value;
   }

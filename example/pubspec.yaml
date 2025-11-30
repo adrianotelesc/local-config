@@ -13,6 +13,8 @@ dependencies:
 
   local_config:
     path: ..
+  shared_preferences: ^2.3.4
+  flutter_secure_storage: ^9.2.2
 
 dev_dependencies:
   flutter_test:
