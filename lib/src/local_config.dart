@@ -42,8 +42,8 @@ final class LocalConfig {
   }
 
   Widget get entrypoint {
-    return Provider<ServiceLocator>(
-      create: (_) => _locator,
+    return MultiProvider(
+      providers: [Provider<ServiceLocator>(create: (_) => _locator)],
       child: const LocalConfigEntrypoint(),
     );
   }
