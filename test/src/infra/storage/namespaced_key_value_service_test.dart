@@ -1,23 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:local_config/src/common/util/key_namespace.dart';
-import 'package:local_config/src/core/service/key_value_service.dart';
-import 'package:local_config/src/infra/service/namespaced_key_value_service.dart';
+import 'package:local_config/src/core/storage/key_value_store.dart';
+import 'package:local_config/src/infra/storage/namespaced_key_value_store.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockKeyNamespace extends Mock implements KeyNamespace {}
 
-class MockKeyValueService extends Mock implements KeyValueService {}
+class MockKeyValueService extends Mock implements KeyValueStore {}
 
 void main() {
   late MockKeyNamespace mockKeyNamespace;
   late MockKeyValueService mockInnerService;
-  late NamespacedKeyValueService service;
+  late NamespacedKeyValueStore service;
 
   setUp(() {
     mockInnerService = MockKeyValueService();
     mockKeyNamespace = MockKeyNamespace();
 
-    service = NamespacedKeyValueService(
+    service = NamespacedKeyValueStore(
       namespace: mockKeyNamespace,
       inner: mockInnerService,
     );
@@ -25,10 +25,7 @@ void main() {
 
   group('NamespacedKeyValueService.all', () {
     test('returns only namespaced keys with prefix removed', () async {
-      const all = {
-        'ns:foo': 'bar',
-        'other:key': 'value',
-      };
+      const all = {'ns:foo': 'bar', 'other:key': 'value'};
 
       when(() => mockInnerService.all).thenAnswer((_) async => all);
       when(() => mockKeyNamespace.matches('ns:foo')).thenReturn(true);

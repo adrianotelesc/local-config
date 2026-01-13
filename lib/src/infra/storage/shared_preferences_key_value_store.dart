@@ -1,10 +1,10 @@
-import 'package:local_config/src/core/service/key_value_service.dart';
+import 'package:local_config/src/core/storage/key_value_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPreferencesKeyValueService extends KeyValueService {
+class SharedPreferencesKeyValueStore extends KeyValueStore {
   final SharedPreferencesAsync _sharedPreferences;
 
-  SharedPreferencesKeyValueService({
+  SharedPreferencesKeyValueStore({
     required SharedPreferencesAsync sharedPreferences,
   }) : _sharedPreferences = sharedPreferences;
 

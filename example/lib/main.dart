@@ -20,7 +20,7 @@ void main() async {
       'animation_speed_string': '1.25',
       'theme_string': '{"seedColor": "#2196F3", "darkMode": false}',
     },
-    keyValueService: SecureStorageKeyValueService(
+    keyValueStore: SecureStorageKeyValueStore(
       secureStorage: const FlutterSecureStorage(
         aOptions: AndroidOptions(encryptedSharedPreferences: true),
       ),

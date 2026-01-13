@@ -1,10 +1,10 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:local_config/src/core/service/key_value_service.dart';
+import 'package:local_config/src/core/storage/key_value_store.dart';
 
-class SecureStorageKeyValueService implements KeyValueService {
+class SecureStorageKeyValueStore implements KeyValueStore {
   final FlutterSecureStorage _secureStorage;
 
-  SecureStorageKeyValueService({required FlutterSecureStorage secureStorage})
+  SecureStorageKeyValueStore({required FlutterSecureStorage secureStorage})
     : _secureStorage = secureStorage;
 
   @override

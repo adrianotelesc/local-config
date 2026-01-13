@@ -15,15 +15,15 @@ final class LocalConfig {
 
   void initialize({
     required Map<String, dynamic> parameters,
-    KeyValueService? keyValueService,
+    KeyValueStore? keyValueStore,
   }) {
     _locator
-      ..registerFactory<KeyValueService>(
-        () => NamespacedKeyValueService(
+      ..registerFactory<KeyValueStore>(
+        () => NamespacedKeyValueStore(
           namespace: KeyNamespace(namespace: _namespace),
           inner:
-              keyValueService ??
-              SharedPreferencesKeyValueService(
+              keyValueStore ??
+              SharedPreferencesKeyValueStore(
                 sharedPreferences: SharedPreferencesAsync(),
               ),
         ),

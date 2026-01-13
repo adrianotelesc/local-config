@@ -1,17 +1,17 @@
 import 'dart:convert';
 
-import 'package:local_config/src/core/service/key_value_service.dart';
+import 'package:local_config/src/core/storage/key_value_store.dart';
 import 'package:local_config/src/data/data_source/key_value_data_source.dart';
 
 class DefaultKeyValueDataSource extends KeyValueDataSource {
-  final KeyValueService _service;
+  final KeyValueStore _store;
 
-  DefaultKeyValueDataSource({required KeyValueService service})
-    : _service = service;
+  DefaultKeyValueDataSource({required KeyValueStore service})
+    : _store = service;
 
   @override
   Future<Map<String, dynamic>> get all async {
-    final all = await _service.all;
+    final all = await _store.all;
     return all.map((key, value) => MapEntry(key, TypeSerializer.encode(value)));
   }
 
@@ -26,7 +26,7 @@ class DefaultKeyValueDataSource extends KeyValueDataSource {
 
   @override
   Future<dynamic> get(String key) async =>
-      TypeSerializer.decode(await _service.getString(key));
+      TypeSerializer.decode(await _store.getString(key));
 
   @override
   Future<void> prune(Set<String> retainedKeys) async {
@@ -40,11 +40,11 @@ class DefaultKeyValueDataSource extends KeyValueDataSource {
   }
 
   @override
-  Future<void> remove(String key) => _service.remove(key);
+  Future<void> remove(String key) => _store.remove(key);
 
   @override
   Future<void> set(String key, dynamic value) =>
-      _service.setString(key, TypeSerializer.encode(value));
+      _store.setString(key, TypeSerializer.encode(value));
 }
 
 class TypeSerializer {
