@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+const _leadingZeroIntRegExp = r'^0\d+$';
+const _leadingZeroDoubleRegExp = r'^0\d+(\.\d+)?$';
+
 extension StringExtension on String {
   Map<String, dynamic>? toMapOrNull() {
     try {
@@ -12,7 +15,7 @@ extension StringExtension on String {
   bool? toBoolOrNull() => bool.tryParse(this);
 
   int? toStrictIntOrNull() {
-    if (RegExp(r'^0\d+$').hasMatch(this)) {
+    if (RegExp(_leadingZeroIntRegExp).hasMatch(this)) {
       return null;
     }
 
@@ -20,7 +23,7 @@ extension StringExtension on String {
   }
 
   double? toStrictDoubleOrNull() {
-    if (RegExp(r'^0\d+(\.\d+)?$').hasMatch(this)) {
+    if (RegExp(_leadingZeroDoubleRegExp).hasMatch(this)) {
       return null;
     }
 
