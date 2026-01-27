@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:local_config/src/common/extension/map_extension.dart';
 
@@ -73,20 +75,17 @@ void main() {
   });
 
   group('MapExtension.stringify', () {
-    test('should convert keys and values to String', () {
-      final map = {1: 10, 'a': true};
+    test('should convert primitive types to string', () {
+      final map = {'int': 1, 'double': 1.5, 'bool': true, 'string': 'hello'};
 
       final result = map.stringify();
 
-      expect(result, {'1': '10', 'a': 'true'});
-    });
-
-    test('should remove entries with null keys', () {
-      final map = {null: 'value', 'key': 'value'};
-
-      final result = map.stringify();
-
-      expect(result, {'key': 'value'});
+      expect(result, {
+        'int': '1',
+        'double': '1.5',
+        'bool': 'true',
+        'string': 'hello',
+      });
     });
 
     test('should convert null values to empty string', () {
@@ -97,7 +96,15 @@ void main() {
       expect(result, {'key': ''});
     });
 
-    test('should remove entries with empty string keys', () {
+    test('should remove null keys', () {
+      final map = {null: 'value', 'key': 'value'};
+
+      final result = map.stringify();
+
+      expect(result, {'key': 'value'});
+    });
+
+    test('should remove empty string keys', () {
       final map = {'': 'value', 'key': 'value'};
 
       final result = map.stringify();
@@ -105,12 +112,68 @@ void main() {
       expect(result, {'key': 'value'});
     });
 
-    test('should handle mixed types and nulls', () {
-      final map = {null: null, '': 1, 123: null, 'valid': 42};
+    test('should serialize Map values as JSON', () {
+      final map = {
+        'config': {'a': 1, 'b': 2},
+      };
 
       final result = map.stringify();
 
-      expect(result, {'123': '', 'valid': '42'});
+      expect(result['config'], jsonEncode({'a': 1, 'b': 2}));
+    });
+
+    test('should serialize List values as JSON', () {
+      final map = {
+        'list': [1, 2, 3],
+      };
+
+      final result = map.stringify();
+
+      expect(result['list'], jsonEncode([1, 2, 3]));
+    });
+
+    test('should handle nested structures', () {
+      final map = {
+        'nested': {
+          'a': [1, 2],
+          'b': {'c': true},
+        },
+      };
+
+      final result = map.stringify();
+
+      expect(
+        result['nested'],
+        jsonEncode({
+          'a': [1, 2],
+          'b': {'c': true},
+        }),
+      );
+    });
+
+    test('should fallback to toString for custom objects', () {
+      final obj = Object();
+      final map = {'obj': obj};
+
+      final result = map.stringify();
+
+      expect(result['obj'], obj.toString());
+    });
+
+    test('should handle mixed types and invalid keys', () {
+      final map = {
+        null: null,
+        '': 1,
+        123: {'x': 10},
+        'valid': [1, 2],
+      };
+
+      final result = map.stringify();
+
+      expect(result, {
+        '123': jsonEncode({'x': 10}),
+        'valid': jsonEncode([1, 2]),
+      });
     });
 
     test('should return empty map when all keys are invalid', () {
