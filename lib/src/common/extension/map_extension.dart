@@ -10,5 +10,5 @@ extension MapExtension<K, V> on Map<K, V> {
 
   Map<String, String> stringify() => map(
     (key, value) => MapEntry(key?.toString() ?? '', value?.toString() ?? ''),
-  ).where((key, value) => key.isNotEmpty && value.isNotEmpty);
+  ).where((key, value) => key.isNotEmpty);
 }

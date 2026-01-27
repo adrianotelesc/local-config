@@ -71,4 +71,54 @@ void main() {
       expect(result, isFalse);
     });
   });
+
+  group('MapExtension.stringify', () {
+    test('should convert keys and values to String', () {
+      final map = {1: 10, 'a': true};
+
+      final result = map.stringify();
+
+      expect(result, {'1': '10', 'a': 'true'});
+    });
+
+    test('should remove entries with null keys', () {
+      final map = {null: 'value', 'key': 'value'};
+
+      final result = map.stringify();
+
+      expect(result, {'key': 'value'});
+    });
+
+    test('should convert null values to empty string', () {
+      final map = {'key': null};
+
+      final result = map.stringify();
+
+      expect(result, {'key': ''});
+    });
+
+    test('should remove entries with empty string keys', () {
+      final map = {'': 'value', 'key': 'value'};
+
+      final result = map.stringify();
+
+      expect(result, {'key': 'value'});
+    });
+
+    test('should handle mixed types and nulls', () {
+      final map = {null: null, '': 1, 123: null, 'valid': 42};
+
+      final result = map.stringify();
+
+      expect(result, {'123': '', 'valid': '42'});
+    });
+
+    test('should return empty map when all keys are invalid', () {
+      final map = {null: 1, '': 2};
+
+      final result = map.stringify();
+
+      expect(result, isEmpty);
+    });
+  });
 }
