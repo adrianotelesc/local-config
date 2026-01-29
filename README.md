@@ -1,4 +1,15 @@
-# Local Config
+<p align="center">
+    <a href="https://github.com/adrianotelesc/local_config" align="center">
+        <img alt="Local Config" src="https://github.com/user-attachments/assets/a4c8f820-a52f-4921-b49e-d942e11426e8" />
+    </a>
+</p>
+
+<p align="center">
+  <a href="https://pub.dev/packages/local_config"><img src="https://img.shields.io/pub/v/local_config.svg" alt="Pub"></a>
+  <a href="https://github.com/felangel/bloc/actions"><img src="https://github.com/felangel/bloc/actions/workflows/main.yaml/badge.svg" alt="build"></a>
+  <a href="https://codecov.io/gh/felangel/bloc"><img src="https://codecov.io/gh/felangel/Bloc/branch/master/graph/badge.svg" alt="codecov"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+</p>
 
 Make changes to your app's default behavior and appearance by changing parameter values — just like Firebase Remote Config, but locally. It’s designed for teams that need flexibility to override parameters, test feature flags, and simulate Remote Config behavior directly on their devices.
 
