@@ -76,7 +76,7 @@ abstract final class LocalConfigTheme {
     ),
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: _colorScheme.primary,
-      selectionColor: _colorScheme.primary.withOpacity(0.4),
+      selectionColor: _colorScheme.primary.withAlpha(102),
       selectionHandleColor: _colorScheme.primary,
     ),
     extensions: [
