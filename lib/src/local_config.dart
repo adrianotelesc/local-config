@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:local_config/src/common/extension/map_extension.dart';
-import 'package:local_config/src/common/extension/string_extension.dart';
 import 'package:local_config/src/data/manager/config_manager.dart';
 import 'package:local_config/src/data/manager/default_config_manager.dart';
+import 'package:local_config/src/domain/entity/config.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_config/src/core/di/service_locator.dart';
@@ -69,31 +69,36 @@ final class LocalConfig {
   Stream<Map<String, dynamic>> get onConfigUpdated {
     final repo = _serviceLocator.get<ConfigRepository>();
     return repo.configsStream.map((configs) {
-      return configs.map((key, config) => MapEntry(key, config.value));
+      return configs.map((key, config) => MapEntry(key, config.raw));
     });
   }
 
-  bool? getBool(String key) {
+  ConfigValue? getValue(String key) {
     final repo = _serviceLocator.get<ConfigRepository>();
-    final config = repo.get(key);
-    return config?.value.toBoolOrNull();
+    return repo.get(key);
+  }
+
+  bool? getBool(String key) {
+    final configValue = getValue(key);
+    if (configValue == null) return null;
+    return bool.tryParse(configValue.raw);
   }
 
   double? getDouble(String key) {
-    final repo = _serviceLocator.get<ConfigRepository>();
-    final config = repo.get(key);
-    return config?.value.toStrictDoubleOrNull();
+    final configValue = getValue(key);
+    if (configValue == null) return null;
+    return double.tryParse(configValue.raw);
   }
 
   int? getInt(String key) {
-    final repo = _serviceLocator.get<ConfigRepository>();
-    final config = repo.get(key);
-    return config?.value.toStrictIntOrNull();
+    final configValue = getValue(key);
+    if (configValue == null) return null;
+    return int.tryParse(configValue.raw);
   }
 
   String? getString(String key) {
-    final repo = _serviceLocator.get<ConfigRepository>();
-    final config = repo.get(key);
-    return config?.value;
+    final configValue = getValue(key);
+    if (configValue == null) return null;
+    return configValue.raw;
   }
 }

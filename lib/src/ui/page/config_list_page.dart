@@ -62,7 +62,7 @@ class _ConfigListPageState extends State<ConfigListPage> {
       return (!showOnlyChanged || value.isOverridden) &&
           (query.isEmpty ||
               key.containsInsensitive(query) ||
-              value.value.containsInsensitive(query));
+              value.raw.containsInsensitive(query));
     });
     final items = filtered.toRecordList();
     setState(() => _items = items);

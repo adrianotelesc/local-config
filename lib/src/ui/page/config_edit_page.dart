@@ -25,14 +25,14 @@ class _ConfigEditPageState extends State<ConfigEditPage> {
 
   late final ConfigRepository _repo;
 
-  late ConfigValue _config;
+  late ConfigValue configValue;
 
   @override
   void initState() {
     super.initState();
     _repo = context.read<ServiceLocator>().get<ConfigRepository>();
-    _config = _repo.configs[widget.name]!;
-    _controller.text = _config.value.toString();
+    configValue = _repo.configs[widget.name]!;
+    _controller.text = configValue.raw.toString();
   }
 
   @override
@@ -50,7 +50,7 @@ class _ConfigEditPageState extends State<ConfigEditPage> {
           _Form(
             formKey: _formKey,
             name: widget.name,
-            config: _config,
+            config: configValue,
             controller: _controller,
             repo: _repo,
           ),
@@ -162,7 +162,8 @@ class _Form extends StatelessWidget {
                         leadingIcon: Icon(value.icon),
                       );
                     }).toList(),
-                validator: (value) => config.type.validator(context, value),
+                validator:
+                    (value) => config.type.validator(context, value ?? ''),
                 enabled: false,
                 label: Text(
                   LocalConfigLocalizations.of(context)!.dataType,
@@ -181,7 +182,8 @@ class _Form extends StatelessWidget {
                   repo.set(name, controller.text);
                   Navigator.of(context).pop();
                 },
-                validator: (value) => config.type.validator(context, value),
+                validator:
+                    (value) => config.type.validator(context, value ?? ''),
                 textInputAction: TextInputAction.done,
                 suffixIcon:
                     config.type.isText

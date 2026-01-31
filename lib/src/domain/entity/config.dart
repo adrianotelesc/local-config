@@ -1,4 +1,4 @@
-import 'package:local_config/src/common/extension/string_extension.dart';
+import 'package:local_config/src/common/util/json_safe_convert.dart';
 
 class ConfigValue {
   final String defaultValue;
@@ -18,7 +18,7 @@ class ConfigValue {
 
   ConfigType get type => ConfigType.inferFromValue(defaultValue);
 
-  String get value => overriddenValue ?? defaultValue;
+  String get raw => overriddenValue ?? defaultValue;
 
   @override
   bool operator ==(Object other) =>
@@ -48,9 +48,8 @@ enum ConfigType {
   bool get isText => this == ConfigType.string || this == ConfigType.json;
 
   static ConfigType inferFromValue(String source) {
-    if (source.toBoolOrNull() != null) return ConfigType.boolean;
-    if (source.toStrictDoubleOrNull() != null) return ConfigType.number;
-    if (source.toMapOrNull() != null) return ConfigType.json;
+    if (bool.tryParse(source) != null) return ConfigType.boolean;
+    if (tryJsonDecode(source) != null) return ConfigType.json;
     return ConfigType.string;
   }
 }
