@@ -1,3 +1,4 @@
+//  todo: rethink about prefixed keys with multiple parts (e.g., "local_config:v13.3.1:{key}")
 class KeyNamespace {
   final String _namespace;
 
