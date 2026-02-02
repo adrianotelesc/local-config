@@ -12,8 +12,8 @@ import 'package:local_config/src/core/di/service_locator.dart';
 import 'package:local_config/src/core/storage/key_value_store.dart';
 import 'package:local_config/src/data/data_source/default_key_value_data_source.dart';
 import 'package:local_config/src/data/data_source/key_value_data_source.dart';
-import 'package:local_config/src/data/manager/config_manager.dart';
-import 'package:local_config/src/data/manager/default_config_manager.dart';
+import 'package:local_config/src/domain/manager/config_manager.dart';
+import 'package:local_config/src/domain/manager/default_config_manager.dart';
 import 'package:local_config/src/data/repository/default_config_repository.dart';
 import 'package:local_config/src/data/repository/no_op_config_repository.dart';
 import 'package:local_config/src/domain/entity/config.dart';
@@ -61,7 +61,7 @@ final class LocalConfig {
           ),
         ),
       )
-      ..registerFactory<ConfigManager>(() => DefaultConfigStore())
+      ..registerFactory<ConfigManager>(() => DefaultConfigManager())
       ..unregister<ConfigRepository>()
       ..registerLazySingleton<ConfigRepository>(
         () => DefaultConfigRepository(

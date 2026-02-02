@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:local_config/src/data/data_source/key_value_data_source.dart';
-import 'package:local_config/src/data/manager/config_manager.dart';
+import 'package:local_config/src/domain/manager/config_manager.dart';
 import 'package:local_config/src/domain/entity/config.dart';
 import 'package:local_config/src/domain/repository/config_repository.dart';
 

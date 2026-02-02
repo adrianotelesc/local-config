@@ -1,7 +1,7 @@
-import 'package:local_config/src/data/manager/config_manager.dart';
+import 'package:local_config/src/domain/manager/config_manager.dart';
 import 'package:local_config/src/domain/entity/config.dart';
 
-class DefaultConfigStore implements ConfigManager {
+class DefaultConfigManager implements ConfigManager {
   final Map<String, ConfigValue> _configs = {};
 
   @override
