@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://github.com/adrianotelesc/local_config" align="center">
-        <img alt="Local Config" src="https://raw.githubusercontent.com/adrianotelesc/local-config/main/docs/images/banner.png" />
+        <img alt="Local Config" src="https://raw.githubusercontent.com/adrianotelesc/local-config/main/doc/images/banner.png" />
     </a>
 </p>
 
