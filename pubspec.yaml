@@ -3,7 +3,7 @@ description: |
   Make changes to your app's default behavior 
   and appearance by changing parameter values 
   — just like Firebase Remote Config, but locally.
-version: 0.0.4
+version: 0.1.0
 topics:
   - local
   - config
@@ -15,7 +15,7 @@ issue_tracker: https://github.com/adrianotelesc/local-config/issues
 
 environment:
   sdk: ^3.7.0
-  flutter: ^3.29.3
+  flutter: ">=3.29.3"
 
 dependencies:
   flutter:
