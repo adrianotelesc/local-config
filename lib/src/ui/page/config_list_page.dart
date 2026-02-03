@@ -25,7 +25,7 @@ class ConfigListPage extends StatefulWidget {
 }
 
 class _ConfigListPageState extends State<ConfigListPage> {
-  static const _backToTopScrollOffsetThreshould = 200.0;
+  static const _backToTopScrollOffsetThreshould = 600.0;
 
   final _focusNode = FocusNode();
 
