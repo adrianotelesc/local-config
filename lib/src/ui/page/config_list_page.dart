@@ -134,7 +134,7 @@ class _ConfigListPageState extends State<ConfigListPage> {
             SliverToBoxAdapter(
               child: SwitchListTile(
                 contentPadding: EdgeInsets.symmetric(
-                  horizontal: 12,
+                  horizontal: 16,
                   vertical: 0,
                 ),
                 title: Text(
@@ -181,7 +181,7 @@ class _AppBar extends StatelessWidget {
               ? PreferredSize(
                 preferredSize: const Size.fromHeight(Callout.defaultHeight),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Callout.warning(
                     icon: Icons.error,
                     style: CalloutStyle(
@@ -326,7 +326,7 @@ class _SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ClearableSearchBar(
           controller: controller,
           focusNode: focusNode,
@@ -346,7 +346,7 @@ class _List extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: EdgeInsets.only(left: 12, right: 12, bottom: 128),
+      padding: EdgeInsets.only(left: 16, right: 16, bottom: 128),
       sliver: SliverContainer(
         background: ColoredBox(
           color: Theme.of(context).colorScheme.surfaceContainerLow,
