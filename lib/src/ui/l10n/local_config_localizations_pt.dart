@@ -48,7 +48,7 @@ class LocalConfigLocalizationsPt implements LocalConfigLocalizations {
       'Nenhum parâmetro, valor ou condição corresponde aos critérios de pesquisa.';
 
   @override
-  String get showChangesOnly => 'Mostrar apenas as mudanças';
+  String get showChangesOnly => 'Mostrar apenas os alterados';
 
   @override
   String get noConfigsQuestion => 'SEM CONFIGURAÇÕES?!';
