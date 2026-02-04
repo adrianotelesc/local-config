@@ -82,8 +82,8 @@ class _ConfigListPageState extends State<ConfigListPage> {
     final filtered = _configs.where((key, value) {
       return (!showOnlyChanged || value.isOverridden) &&
           (query.isEmpty ||
-              query.any((q) => key.containsInsensitive(q)) ||
-              query.any((q) => value.raw.containsInsensitive(q)));
+              query.every((q) => key.containsInsensitive(q)) ||
+              query.every((q) => value.raw.containsInsensitive(q)));
     });
     final items = filtered.toRecordList();
     setState(() => _items = items);
