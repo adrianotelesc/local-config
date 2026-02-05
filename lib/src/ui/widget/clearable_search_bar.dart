@@ -54,10 +54,17 @@ class _SearchBarState extends State<ClearableSearchBar> {
             message: 'Clear',
             child: IconButton(
               onPressed: _controller.clear,
-              icon: const Icon(Icons.close),
+              icon: const Icon(Icons.cancel_outlined),
             ),
           ),
       ],
+      backgroundColor: WidgetStateColor.fromMap({
+        WidgetState.focused: Theme.of(context).colorScheme.surfaceContainer,
+        WidgetState.any:
+            _showClearButton
+                ? Theme.of(context).colorScheme.primaryContainer
+                : Theme.of(context).colorScheme.surfaceContainer,
+      }),
       onTapOutside: (event) => widget.focusNode?.unfocus(),
       leading: const Icon(Icons.search),
       padding: const WidgetStatePropertyAll(
