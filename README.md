@@ -44,7 +44,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await LocalConfig.instance.initialize(
-    parameters: {
+    params: {
       'social_login_enabled': false,
       'timeout_ms': 8000,
       'animation_speed': 1.25,
@@ -83,7 +83,7 @@ void main() async {
   await FirebaseRemoteConfig.instance.fetchAndActivate();
 
   await LocalConfig.instance.initialize(
-    parameters: FirebaseRemoteConfig.instance.getAll().map(
+    params: FirebaseRemoteConfig.instance.getAll().map(
       (key, value) => MapEntry(key, value.asString()),
     ),
   );
@@ -99,7 +99,7 @@ IconButton(
   onPressed: () {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => LocalConfig.instance.entrypoint,
+        builder: (_) => LocalConfigEntrypoint(),
       ),
     );
   },
@@ -126,7 +126,7 @@ LocalConfig.instance.onConfigUpdated.listen((configs) {
 });
 ```
 
-For a full demo, check the [`example`](https://github.com/adrianotelesc/local-config-flutter/tree/main/example) folder.
+For a full demo, check the [`example`](https://github.com/adrianotelesc/local-config-flutter/tree/main/example/lib/main.dart) folder.
 
 ---
 
