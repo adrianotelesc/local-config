@@ -31,7 +31,7 @@ The main goal is to provide the ability to manage configs locally for any purpos
 
 ```yaml
 dependencies:
-  local_config: ^0.2.0
+  local_config: ^0.2.1
 ```
 
 #### Initialize with your parameters
