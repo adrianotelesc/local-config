@@ -1,3 +1,4 @@
+import 'package:local_config/src/common/util/boolify.dart';
 import 'package:local_config/src/common/util/key_validation.dart';
 import 'package:local_config/src/domain/policy/baseline_value_prune_policy.dart';
 import 'package:local_config/src/domain/policy/composite_prune_policy.dart';
@@ -85,7 +86,7 @@ final class LocalConfig {
   bool? getBool(String key) {
     final value = _getValue(key);
     if (value == null) return null;
-    return bool.tryParse(value.raw);
+    return tryBoolify(value.raw);
   }
 
   double? getDouble(String key) {
