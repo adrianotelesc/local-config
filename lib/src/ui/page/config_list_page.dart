@@ -380,7 +380,7 @@ class _List extends StatelessWidget {
                             : null,
                     title: Text(
                       name,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontFamily: 'GoogleSansCode',
                         fontWeight: isOverridden ? FontWeight.bold : null,
                       ),
