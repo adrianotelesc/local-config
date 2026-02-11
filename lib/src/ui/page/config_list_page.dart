@@ -146,7 +146,7 @@ class _ConfigListPageState extends State<ConfigListPage> {
                   vertical: 0,
                 ),
                 title: Text(
-                  LocalConfigLocalizations.of(context).showOnlyChanged,
+                  LocalConfigLocalizations.of(context)!.showChangesOnly,
                 ),
                 value: showOnlyChanged,
                 onChanged: (value) {
@@ -195,12 +195,12 @@ class _AppBar extends StatelessWidget {
                     style: CalloutStyle(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    text: LocalConfigLocalizations.of(context).changesApplied,
+                    text: LocalConfigLocalizations.of(context)!.changesApplied,
                     trailing: TextButton(
                       onPressed: repo.clear,
                       style: warningButtonStyle(context),
                       child: Text(
-                        LocalConfigLocalizations.of(context).revertAll,
+                        LocalConfigLocalizations.of(context)!.revertAll,
                       ),
                     ),
                   ),
@@ -226,14 +226,14 @@ class _PendingStatusNotice extends StatelessWidget {
           spacing: 24,
           children: [
             Text(
-              LocalConfigLocalizations.of(context).noConfigsQuestion,
+              LocalConfigLocalizations.of(context)!.noConfigsQuestion,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             RichText(
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: LocalConfigLocalizations.of(context).possibleCauses,
+                    text: LocalConfigLocalizations.of(context)!.possibleCauses,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const TextSpan(text: '\n\n'),
@@ -243,7 +243,7 @@ class _PendingStatusNotice extends StatelessWidget {
                         text:
                             LocalConfigLocalizations.of(
                               context,
-                            ).uninitializedTitle,
+                            )!.uninitializedTitle,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -253,7 +253,7 @@ class _PendingStatusNotice extends StatelessWidget {
                         text:
                             LocalConfigLocalizations.of(
                               context,
-                            ).uninitializedDescription,
+                            )!.uninitializedDescription,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -265,7 +265,7 @@ class _PendingStatusNotice extends StatelessWidget {
                         text:
                             LocalConfigLocalizations.of(
                               context,
-                            ).emptyConfigsTitle,
+                            )!.emptyConfigsTitle,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -275,7 +275,7 @@ class _PendingStatusNotice extends StatelessWidget {
                         text:
                             LocalConfigLocalizations.of(
                               context,
-                            ).emptyConfigsDescription,
+                            )!.emptyConfigsDescription,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -287,7 +287,7 @@ class _PendingStatusNotice extends StatelessWidget {
                         text:
                             LocalConfigLocalizations.of(
                               context,
-                            ).loadingConfigsTitle,
+                            )!.loadingConfigsTitle,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -297,7 +297,7 @@ class _PendingStatusNotice extends StatelessWidget {
                         text:
                             LocalConfigLocalizations.of(
                               context,
-                            ).loadingConfigsDescription,
+                            )!.loadingConfigsDescription,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -309,7 +309,7 @@ class _PendingStatusNotice extends StatelessWidget {
                         text:
                             LocalConfigLocalizations.of(
                               context,
-                            ).openGitHubIssue,
+                            )!.openGitHubIssue,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -338,7 +338,7 @@ class _SearchBar extends StatelessWidget {
         child: ClearableSearchBar(
           controller: controller,
           focusNode: focusNode,
-          hintText: LocalConfigLocalizations.of(context).search,
+          hintText: LocalConfigLocalizations.of(context)!.search,
         ),
       ),
     );
@@ -370,7 +370,7 @@ class _List extends StatelessWidget {
                   vertical: 16,
                 ),
                 sliver: SliverToBoxAdapter(
-                  child: Text(LocalConfigLocalizations.of(context).noResults),
+                  child: Text(LocalConfigLocalizations.of(context)!.noResults),
                 ),
               ),
             if (items.isNotEmpty)
@@ -447,12 +447,12 @@ class _List extends StatelessWidget {
                               ),
                               icon: Icons.error,
                               text:
-                                  LocalConfigLocalizations.of(context).changed,
+                                  LocalConfigLocalizations.of(context)!.changed,
                               trailing: TextButton(
                                 onPressed: () => repo.remove(name),
                                 style: warningButtonStyle(context),
                                 child: Text(
-                                  LocalConfigLocalizations.of(context).revert,
+                                  LocalConfigLocalizations.of(context)!.revert,
                                 ),
                               ),
                             )
@@ -465,7 +465,7 @@ class _List extends StatelessWidget {
                         );
                       },
                       icon: const Icon(Icons.edit),
-                      tooltip: LocalConfigLocalizations.of(context).edit,
+                      tooltip: LocalConfigLocalizations.of(context)!.edit,
                     ),
                   );
                 },

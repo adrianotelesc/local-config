@@ -1,6 +1,13 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'local_config_localizations.dart';
 
-class LocalConfigLocalizationsPt implements LocalConfigLocalizations {
+// ignore_for_file: type=lint
+
+/// The translations for Portuguese (`pt`).
+class LocalConfigLocalizationsPt extends LocalConfigLocalizations {
+  LocalConfigLocalizationsPt([String locale = 'pt']) : super(locale);
+
   @override
   String get localConfig => 'Configuração Local';
 

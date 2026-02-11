@@ -1,6 +1,13 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'local_config_localizations.dart';
 
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
 class LocalConfigLocalizationsEn extends LocalConfigLocalizations {
+  LocalConfigLocalizationsEn([String locale = 'en']) : super(locale);
+
   @override
   String get localConfig => 'Local Config';
 

@@ -9,7 +9,7 @@ import 'package:local_config/src/domain/entity/config.dart';
 extension ConfigDisplayExtension on ConfigValue {
   String getDisplayText(BuildContext context) {
     return type == ConfigType.string && raw.isEmpty
-        ? LocalConfigLocalizations.of(context).emptyString
+        ? LocalConfigLocalizations.of(context)!.emptyString
         : raw.toString();
   }
 }
@@ -21,8 +21,8 @@ extension ConfigTypeExtension on ConfigType {
 
   String getDisplayName(BuildContext context) {
     return switch (this) {
-      ConfigType.boolean => LocalConfigLocalizations.of(context).boolean,
-      ConfigType.number => LocalConfigLocalizations.of(context).number,
+      ConfigType.boolean => LocalConfigLocalizations.of(context)!.boolean,
+      ConfigType.number => LocalConfigLocalizations.of(context)!.number,
       ConfigType.string => 'String',
       ConfigType.json => 'JSON',
     };
@@ -39,13 +39,13 @@ extension ConfigTypeExtension on ConfigType {
 
   String? validator(BuildContext context, String value) {
     if (this == ConfigType.boolean && bool.tryParse(value) == null) {
-      return LocalConfigLocalizations.of(context).invalidBoolean;
+      return LocalConfigLocalizations.of(context)!.invalidBoolean;
     }
     if (this == ConfigType.number && num.tryParse(value) == null) {
-      return LocalConfigLocalizations.of(context).invalidNumber;
+      return LocalConfigLocalizations.of(context)!.invalidNumber;
     }
     if (this == ConfigType.json && tryJsonDecode(value) == null) {
-      return LocalConfigLocalizations.of(context).invalidJson;
+      return LocalConfigLocalizations.of(context)!.invalidJson;
     }
     return null;
   }
@@ -67,7 +67,7 @@ extension ConfigTypeExtension on ConfigType {
 
     return TextSpan(
       children: [
-        TextSpan(text: LocalConfigLocalizations.of(context).help),
+        TextSpan(text: LocalConfigLocalizations.of(context)!.help),
         ...suffixes.map((suffix) {
           return TextSpan(
             children: [

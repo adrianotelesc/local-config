@@ -83,7 +83,7 @@ class _AppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return RootAwareSliverAppBar(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
-      title: Text(LocalConfigLocalizations.of(context).editParameter),
+      title: Text(LocalConfigLocalizations.of(context)!.editParameter),
       actionsPadding: const EdgeInsets.all(8),
       actions: [
         TextButton(
@@ -92,7 +92,7 @@ class _AppBar extends StatelessWidget {
             repo.set(name, controller.text);
             Navigator.of(context).pop();
           },
-          child: Text(LocalConfigLocalizations.of(context).save),
+          child: Text(LocalConfigLocalizations.of(context)!.save),
         ),
       ],
       centerTitle: false,
@@ -144,7 +144,7 @@ class _Form extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     spacing: 8,
                     children: [
-                      Text(LocalConfigLocalizations.of(context).parameterName),
+                      Text(LocalConfigLocalizations.of(context)!.parameterName),
                       const Icon(Icons.help_outline, size: 16),
                     ],
                   ),
@@ -167,7 +167,7 @@ class _Form extends StatelessWidget {
                     (value) => config.type.validator(context, value ?? ''),
                 enabled: false,
                 label: Text(
-                  LocalConfigLocalizations.of(context).dataType,
+                  LocalConfigLocalizations.of(context)!.dataType,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
@@ -200,7 +200,7 @@ class _Form extends StatelessWidget {
                                     value: controller.text,
                                     title: LocalConfigLocalizations.of(
                                       context,
-                                    ).editorOf(
+                                    )!.editorOf(
                                       config.type.getDisplayName(context),
                                     ),
                                     controller:
@@ -215,11 +215,11 @@ class _Form extends StatelessWidget {
                           tooltip:
                               LocalConfigLocalizations.of(
                                 context,
-                              ).fullScreenEditor,
+                              )!.fullScreenEditor,
                         )
                         : null,
                 label: Text(
-                  LocalConfigLocalizations.of(context).value,
+                  LocalConfigLocalizations.of(context)!.value,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
