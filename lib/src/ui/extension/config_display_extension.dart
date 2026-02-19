@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:local_config/src/common/util/json_safe_convert.dart';
+import 'package:local_config/src/domain/entity/local_config_value.dart';
 import 'package:local_config/src/ui/l10n/local_config_localizations.dart';
 import 'package:local_config/src/ui/widget/text_editor/controller/text_editor_controller.dart';
 import 'package:local_config/src/ui/widget/text_editor/controller/json_editor_controller.dart';
 import 'package:local_config/src/ui/widget/text_editor/controller/string_editor_controller.dart';
-import 'package:local_config/src/domain/entity/config.dart';
 
-extension ConfigDisplayExtension on ConfigValue {
+extension ConfigDisplayExtension on LocalConfigValue {
   String getDisplayText(BuildContext context) {
     return type == ConfigType.string && raw.isEmpty
         ? LocalConfigLocalizations.of(context)!.emptyString

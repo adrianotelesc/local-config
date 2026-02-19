@@ -1,39 +1,31 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_config/local_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  LocalConfig.instance.initialize(
-    params: {
-      'social_login_enabled': false,
-      'timeout_ms': 8000,
-      'animation_speed': 1.25,
-      'api_base_url': 'https://api.myapp.com/v1',
-      "checkout": {
-        "payment_methods": {
-          "allowed": ["credit_card", "pix", "boleto"],
-          "default": "credit_card",
-        },
-        "installments": {
-          "enabled": false,
-          "rules": [
-            {"max_installments": 3, "min_order_value": 0},
-            {"max_installments": 6, "min_order_value": 100},
-            {"max_installments": 10, "min_order_value": 300},
-          ],
-        },
+  await LocalConfig.instance.setDefaults({
+    'social_login_enabled': false,
+    'timeout_ms': 8000,
+    'animation_speed': 1.25,
+    'api_base_url': 'https://api.myapp.com/v1',
+    "checkout": {
+      "payment_methods": {
+        "allowed": ["credit_card", "pix", "boleto"],
+        "default": "credit_card",
+      },
+      "installments": {
+        "enabled": false,
+        "rules": [
+          {"max_installments": 3, "min_order_value": 0},
+          {"max_installments": 6, "min_order_value": 100},
+          {"max_installments": 10, "min_order_value": 300},
+        ],
       },
     },
-    store: SecureStorageKeyValueStore(
-      secureStorage: const FlutterSecureStorage(
-        aOptions: AndroidOptions(encryptedSharedPreferences: true),
-      ),
-    ),
-  );
+  });
 
   runApp(const ExampleApp());
 }
@@ -79,9 +71,12 @@ class _ConfigListViewState extends State<_ConfigListView> {
   @override
   void initState() {
     super.initState();
+    _configEntries = LocalConfig.instance.getAll().entries.toList();
 
     _configUpdateSub = LocalConfig.instance.onConfigUpdated.listen((configs) {
-      setState(() => _configEntries = configs.entries.toList());
+      setState(
+        () => _configEntries = LocalConfig.instance.getAll().entries.toList(),
+      );
     });
   }
 

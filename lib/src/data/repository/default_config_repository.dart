@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:local_config/src/data/data_source/key_value_data_source.dart';
+import 'package:local_config/src/domain/entity/local_config_update.dart';
+import 'package:local_config/src/domain/entity/local_config_value.dart';
 import 'package:local_config/src/domain/manager/config_manager.dart';
-import 'package:local_config/src/domain/entity/config.dart';
 import 'package:local_config/src/domain/repository/config_repository.dart';
 
 class DefaultConfigRepository implements ConfigRepository {
@@ -10,7 +11,7 @@ class DefaultConfigRepository implements ConfigRepository {
 
   final ConfigManager _manager;
 
-  final _controller = StreamController<Map<String, ConfigValue>>.broadcast();
+  final _controller = StreamController<LocalConfigUpdate>.broadcast();
 
   DefaultConfigRepository({
     required KeyValueDataSource dataSource,
@@ -19,23 +20,21 @@ class DefaultConfigRepository implements ConfigRepository {
        _manager = manager;
 
   @override
-  Map<String, ConfigValue> get configs => _manager.configs;
+  Map<String, LocalConfigValue> get values => _manager.configs;
 
   @override
-  Stream<Map<String, ConfigValue>> get configsStream => _controller.stream;
+  Stream<LocalConfigUpdate> get onConfigUpdated => _controller.stream;
 
   @override
-  ConfigValue? get(String key) => _manager.get(key);
+  LocalConfigValue? get(String key) => _manager.get(key);
 
   @override
-  Future<void> populate(Map<String, String> defaults) async {
-    await _dataSource.prune(defaults);
+  Future<void> populate(Map<String, String> defaultParameters) async {
+    await _dataSource.prune(defaultParameters);
 
-    final overrides = await _dataSource.all;
+    final overrideParameters = await _dataSource.all;
 
-    _manager.populate(defaults, overrides);
-
-    _controller.add(configs);
+    _manager.populate(defaultParameters, overrideParameters);
   }
 
   @override
@@ -44,16 +43,17 @@ class DefaultConfigRepository implements ConfigRepository {
 
     await _dataSource.remove(key);
 
-    _controller.add(configs);
+    _controller.add(LocalConfigUpdate({key}));
   }
 
   @override
   Future<void> clear() async {
     _manager.updateAll(null);
 
+    final all = await _dataSource.all;
     await _dataSource.clear();
 
-    _controller.add(configs);
+    _controller.add(LocalConfigUpdate({...all.keys}));
   }
 
   @override
@@ -66,6 +66,6 @@ class DefaultConfigRepository implements ConfigRepository {
       await _dataSource.set(key, value);
     }
 
-    _controller.add(configs);
+    _controller.add(LocalConfigUpdate({key}));
   }
 }

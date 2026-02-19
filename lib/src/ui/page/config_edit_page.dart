@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:local_config/src/core/di/service_locator.dart';
 import 'package:local_config/src/domain/repository/config_repository.dart';
 import 'package:local_config/src/ui/extension/config_display_extension.dart';
-import 'package:local_config/src/domain/entity/config.dart';
+import 'package:local_config/src/domain/entity/local_config_value.dart';
 import 'package:local_config/src/ui/l10n/local_config_localizations.dart';
 import 'package:local_config/src/ui/widget/root_aware_sliver_app_bar.dart';
 import 'package:local_config/src/ui/widget/text_editor/text_editor.dart';
@@ -25,13 +25,13 @@ class _ConfigEditPageState extends State<ConfigEditPage> {
 
   late final ConfigRepository _repo;
 
-  late ConfigValue configValue;
+  late LocalConfigValue configValue;
 
   @override
   void initState() {
     super.initState();
     _repo = context.read<ServiceLocator>().get<ConfigRepository>();
-    configValue = _repo.configs[widget.name]!;
+    configValue = _repo.values[widget.name]!;
     _controller.text = configValue.raw.toString();
   }
 
@@ -104,7 +104,7 @@ class _AppBar extends StatelessWidget {
 class _Form extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final String name;
-  final ConfigValue config;
+  final LocalConfigValue config;
   final TextEditingController controller;
   final ConfigRepository repo;
 

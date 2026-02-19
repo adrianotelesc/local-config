@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:local_config/src/domain/manager/default_config_manager.dart';
-import 'package:local_config/src/domain/entity/config.dart';
+import 'package:local_config/src/domain/entity/local_config_value.dart';
 
 void main() {
   late DefaultConfigManager manager;
@@ -58,7 +58,7 @@ void main() {
       final map = manager.configs;
 
       expect(
-        () => map['x'] = const ConfigValue(defaultValue: 'x'),
+        () => map['x'] = const LocalConfigValue(defaultValue: 'x'),
         throwsUnsupportedError,
       );
     });

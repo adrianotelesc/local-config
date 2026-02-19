@@ -11,7 +11,7 @@ import 'package:local_config/src/ui/local_config_routes.dart';
 import 'package:local_config/src/ui/local_config_theme.dart';
 import 'package:local_config/src/ui/extension/config_display_extension.dart';
 import 'package:local_config/src/ui/widget/callout.dart';
-import 'package:local_config/src/domain/entity/config.dart';
+import 'package:local_config/src/domain/entity/local_config_value.dart';
 import 'package:local_config/src/ui/widget/extended_list_tile.dart';
 import 'package:local_config/src/ui/widget/clearable_search_bar.dart';
 import 'package:local_config/src/ui/widget/root_aware_sliver_app_bar.dart';
@@ -39,9 +39,9 @@ class _ConfigListPageState extends State<ConfigListPage> {
 
   var showOnlyChanged = false;
 
-  var _configs = <String, ConfigValue>{};
+  var _configs = <String, LocalConfigValue>{};
 
-  var _items = <(String, ConfigValue)>[];
+  var _items = <(String, LocalConfigValue)>[];
 
   var _hasOverrides = false;
 
@@ -53,9 +53,11 @@ class _ConfigListPageState extends State<ConfigListPage> {
   void initState() {
     super.initState();
     _repo = context.read<ServiceLocator>().get<ConfigRepository>();
-    _updateConfigs(_repo.configs);
+    _updateConfigs(_repo.values);
     _textController.addListener(_updateItems);
-    _sub = _repo.configsStream.listen(_updateConfigs);
+    _sub = _repo.onConfigUpdated.listen(
+      (update) => _updateConfigs(_repo.values),
+    );
     _scrollController.addListener(_updateBackToTop);
   }
 
@@ -70,7 +72,7 @@ class _ConfigListPageState extends State<ConfigListPage> {
     }
   }
 
-  void _updateConfigs(Map<String, ConfigValue> configs) {
+  void _updateConfigs(Map<String, LocalConfigValue> configs) {
     _configs = configs;
     _updateItems();
     _updateOverrides();
@@ -347,7 +349,7 @@ class _SearchBar extends StatelessWidget {
 
 class _List extends StatelessWidget {
   final List<String> terms;
-  final List<(String, ConfigValue)> items;
+  final List<(String, LocalConfigValue)> items;
   final ConfigRepository repo;
 
   const _List({required this.items, required this.repo, this.terms = const []});

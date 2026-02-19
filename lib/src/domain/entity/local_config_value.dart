@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:local_config/src/common/util/json_safe_convert.dart';
 
-class ConfigValue {
+class LocalConfigValue {
   final String defaultValue;
 
   final String? overriddenValue;
 
-  const ConfigValue({required this.defaultValue, this.overriddenValue});
+  const LocalConfigValue({required this.defaultValue, this.overriddenValue});
 
   @override
   int get hashCode => Object.hash(defaultValue, overriddenValue);
@@ -34,12 +34,12 @@ class ConfigValue {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ConfigValue &&
+      other is LocalConfigValue &&
           defaultValue == other.defaultValue &&
           overriddenValue == other.overriddenValue;
 
-  ConfigValue copyWith({String? overriddenValue}) {
-    return ConfigValue(
+  LocalConfigValue copyWith({String? overriddenValue}) {
+    return LocalConfigValue(
       defaultValue: defaultValue,
       overriddenValue: overriddenValue,
     );

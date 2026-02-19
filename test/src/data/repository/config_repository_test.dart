@@ -1,9 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:local_config/src/domain/entity/local_config_update.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:local_config/src/data/data_source/key_value_data_source.dart';
 import 'package:local_config/src/data/repository/default_config_repository.dart';
-import 'package:local_config/src/domain/entity/config.dart';
+import 'package:local_config/src/domain/entity/local_config_value.dart';
 import 'package:local_config/src/domain/manager/config_manager.dart';
 
 class MockDataSource extends Mock implements KeyValueDataSource {}
@@ -29,8 +30,6 @@ void main() {
       when(() => manager.populate(any(), any())).thenReturn(null);
       when(() => manager.configs).thenReturn({});
 
-      expectLater(repo.configsStream, emits(isA<Map<String, ConfigValue>>()));
-
       await repo.populate({'a': '1'});
 
       verify(() => dataSource.prune({'a': '1'})).called(1);
@@ -52,7 +51,7 @@ void main() {
     test('delegates to manager', () {
       when(() => manager.configs).thenReturn({});
 
-      repo.configs;
+      repo.values;
 
       verify(() => manager.configs).called(1);
     });
@@ -62,11 +61,11 @@ void main() {
     test('updates manager, removes datasource, emits', () async {
       when(
         () => manager.update('a', null),
-      ).thenReturn(ConfigValue(defaultValue: '1'));
+      ).thenReturn(LocalConfigValue(defaultValue: '1'));
       when(() => dataSource.remove('a')).thenAnswer((_) async {});
       when(() => manager.configs).thenReturn({});
 
-      expectLater(repo.configsStream, emits(isA<Map<String, ConfigValue>>()));
+      expectLater(repo.onConfigUpdated, emits(isA<LocalConfigUpdate>()));
 
       await repo.remove('a');
 
@@ -78,10 +77,11 @@ void main() {
   group('clear', () {
     test('updates all, clears datasource, emits', () async {
       when(() => manager.updateAll(null)).thenReturn(null);
+      when(() => dataSource.all).thenAnswer((_) async => {'a': '2'});
       when(() => dataSource.clear()).thenAnswer((_) async {});
       when(() => manager.configs).thenReturn({});
 
-      expectLater(repo.configsStream, emits(isA<Map<String, ConfigValue>>()));
+      expectLater(repo.onConfigUpdated, emits(isA<LocalConfigUpdate>()));
 
       await repo.clear();
 
@@ -92,13 +92,16 @@ void main() {
 
   group('set', () {
     test('writes to datasource when overridden', () async {
-      final overridden = ConfigValue(defaultValue: '1', overriddenValue: '2');
+      final overridden = LocalConfigValue(
+        defaultValue: '1',
+        overriddenValue: '2',
+      );
 
       when(() => manager.update('a', '2')).thenReturn(overridden);
       when(() => dataSource.set('a', '2')).thenAnswer((_) async {});
       when(() => manager.configs).thenReturn({});
 
-      expectLater(repo.configsStream, emits(isA<Map<String, ConfigValue>>()));
+      expectLater(repo.onConfigUpdated, emits(isA<LocalConfigUpdate>()));
 
       await repo.set('a', '2');
 
@@ -107,13 +110,16 @@ void main() {
     });
 
     test('removes from datasource when not overridden', () async {
-      final baseline = ConfigValue(defaultValue: '1', overriddenValue: null);
+      final baseline = LocalConfigValue(
+        defaultValue: '1',
+        overriddenValue: null,
+      );
 
       when(() => manager.update('a', '1')).thenReturn(baseline);
       when(() => dataSource.remove('a')).thenAnswer((_) async {});
       when(() => manager.configs).thenReturn({});
 
-      expectLater(repo.configsStream, emits(isA<Map<String, ConfigValue>>()));
+      expectLater(repo.onConfigUpdated, emits(isA<LocalConfigUpdate>()));
 
       await repo.set('a', '1');
 
