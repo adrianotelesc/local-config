@@ -39,11 +39,11 @@ class DefaultKeyValueDataSource extends KeyValueDataSource {
 
   @override
   Future<void> set(String key, String value) async {
-    if (isSnakeCase(key)) {
+    if (!isSnakeCase(key)) {
       throw ArgumentError.value(
         key,
         'key',
-        'The parameter key must start with an English letter or underscore character [A-Z, a-z], and may also include numbers.',
+        'The parameter key must start with an English letter or underscore character [A-Z, a-z], and may also include numbers',
       );
     }
 
