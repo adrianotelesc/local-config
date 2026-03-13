@@ -2,6 +2,75 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:local_config/src/common/utils/type_converters.dart';
 
 void main() {
+  group('tryParseBool', () {
+    test('returns true for bool true', () {
+      expect(tryParseBool(true), isTrue);
+    });
+
+    test('returns false for bool false', () {
+      expect(tryParseBool(false), isFalse);
+    });
+
+    test('returns true for num 1', () {
+      expect(tryParseBool(1), isTrue);
+    });
+
+    test('returns false for num 0', () {
+      expect(tryParseBool(0), isFalse);
+    });
+
+    test('returns null for other num', () {
+      expect(tryParseBool(2), isNull);
+    });
+
+    test('returns true for string "true"', () {
+      expect(tryParseBool('true'), isTrue);
+    });
+
+    test('returns false for string "false"', () {
+      expect(tryParseBool('false'), isFalse);
+    });
+
+    test('returns true for string "1"', () {
+      expect(tryParseBool('1'), isTrue);
+    });
+
+    test('returns false for string "0"', () {
+      expect(tryParseBool('0'), isFalse);
+    });
+
+    test('returns null for invalid string', () {
+      expect(tryParseBool('yes'), isNull);
+    });
+
+    test('returns null for other types', () {
+      expect(tryParseBool({}), isNull);
+    });
+  });
+
+  group('stringify', () {
+    test('returns string as is', () {
+      expect(stringify('hello'), 'hello');
+    });
+
+    test('returns JSON for Map', () {
+      expect(stringify({'key': 'value'}), '{"key":"value"}');
+    });
+
+    test('returns JSON for List', () {
+      expect(stringify([1, 2, 3]), '[1,2,3]');
+    });
+
+    test('returns toString for other objects', () {
+      expect(stringify(42), '42');
+    });
+
+    test('falls back to toString for unencodable Map', () {
+      final unencodable = {'key': Object()};
+      expect(stringify(unencodable), unencodable.toString());
+    });
+  });
+
   group('tryJsonDecode', () {
     test('returns map for valid json object', () {
       const json = '{"a":1,"b":"x"}';

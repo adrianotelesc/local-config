@@ -69,6 +69,12 @@ void main() {
 
       verify(() => store.setString('cfg_v1_theme', 'x')).called(1);
     });
+
+    test('throws ArgumentError for invalid key', () async {
+      expect(() => dataSource.set('Invalid-Key', 'value'), throwsArgumentError);
+
+      verifyNever(() => store.setString(any(), any()));
+    });
   });
 
   group('remove', () {
