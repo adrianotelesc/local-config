@@ -6,6 +6,9 @@ extension MapExtension<K, V> on Map<K, V> {
   Map<K, V> whereKey(bool Function(K) test) =>
       Map<K, V>.fromEntries(entries.where((entry) => test(entry.key)));
 
+  void removeWhereKey(bool Function(K) test) =>
+      removeWhere((key, _) => test(key));
+
   List<(K, V)> toRecordList() =>
       entries.map((entry) => (entry.key, entry.value)).toList();
 
