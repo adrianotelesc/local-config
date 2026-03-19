@@ -55,12 +55,13 @@ class LocalConfigValue {
   );
 
   @override
-  int get hashCode => Object.hash(defaultValue, overrideValue);
+  int get hashCode => Object.hash(type, defaultValue, overrideValue);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is LocalConfigValue &&
+          type == other.type &&
           defaultValue == other.defaultValue &&
           overrideValue == other.overrideValue;
 
