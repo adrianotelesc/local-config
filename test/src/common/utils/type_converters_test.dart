@@ -107,12 +107,12 @@ void main() {
       expect(result[2], 3);
     });
 
-    test('returns null when json is a primitive', () {
+    test('returns value when json is a primitive', () {
       const json = '123';
 
       final result = tryJsonDecode(json);
 
-      expect(result, isNull);
+      expect(result, 123);
     });
 
     test('returns null for empty string', () {
