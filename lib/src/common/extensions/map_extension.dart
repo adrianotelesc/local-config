@@ -5,6 +5,4 @@ extension MapExtension<K, V> on Map<K, V> {
 
   List<(K, V)> toRecordList() =>
       entries.map((entry) => (entry.key, entry.value)).toList();
-
-  bool anyValue(bool Function(V) test) => values.any((value) => test(value));
 }

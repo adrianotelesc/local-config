@@ -97,7 +97,7 @@ class _ConfigListPageState extends State<ConfigListPage> {
   }
 
   void _updateOverrides() {
-    final hasOverrides = _configs.anyValue((config) => config.hasOverride);
+    final hasOverrides = _configs.values.any((value) => value.hasOverride);
     if (hasOverrides == _hasOverrides) return;
     setState(() => _hasOverrides = hasOverrides);
   }

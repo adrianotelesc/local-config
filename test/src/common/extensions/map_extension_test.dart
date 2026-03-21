@@ -38,29 +38,5 @@ void main() {
         expect(result, isEmpty);
       });
     });
-
-    group('anyValue', () {
-      test('returns true when any value matches', () {
-        final map = {'a': 1, 'b': 4};
-
-        final result = map.anyValue((v) => v.isEven);
-
-        expect(result, isTrue);
-      });
-
-      test('returns false when no value matches', () {
-        final map = {'a': 1, 'b': 3};
-
-        final result = map.anyValue((v) => v.isEven);
-
-        expect(result, isFalse);
-      });
-
-      test('returns false for empty map', () {
-        final result = <String, int>{}.anyValue((v) => true);
-
-        expect(result, isFalse);
-      });
-    });
   });
 }
