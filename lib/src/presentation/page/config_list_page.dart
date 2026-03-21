@@ -375,7 +375,7 @@ class _List extends StatelessWidget {
             if (items.isNotEmpty)
               SliverList.separated(
                 itemCount: items.length,
-                separatorBuilder: (_, __) => const Divider(height: 1),
+                separatorBuilder: (_, _) => const Divider(height: 1),
                 itemBuilder: (_, index) {
                   final item = items[index];
                   final (name, config) = (item.key, item.value);
