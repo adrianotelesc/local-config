@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:local_config/src/domain/repository/local_config_repository.dart';
-import 'package:local_config/src/local_config_internal.dart';
+import 'package:local_config/src/domain/repositories/local_config_repository.dart';
+import 'package:local_config/src/local_config_internals.dart';
 import 'package:local_config/src/presentation/extensions/config_display_extension.dart';
-import 'package:local_config/src/domain/entity/local_config_value.dart';
+import 'package:local_config/src/domain/entities/local_config_value.dart';
 import 'package:local_config/src/presentation/l10n/generated/local_config_localizations.dart';
-import 'package:local_config/src/presentation/widget/root_aware_sliver_app_bar.dart';
-import 'package:local_config/src/presentation/widget/text_editor/text_editor.dart';
-import 'package:local_config/src/presentation/widget/input_form_field.dart';
+import 'package:local_config/src/presentation/widgets/root_aware_sliver_app_bar.dart';
+import 'package:local_config/src/presentation/widgets/text_editor/text_editor.dart';
+import 'package:local_config/src/presentation/widgets/input_form_field.dart';
 
-class ConfigEditPage extends StatefulWidget {
+class ConfigEditScreen extends StatefulWidget {
   final String name;
 
-  const ConfigEditPage({super.key, required this.name});
+  const ConfigEditScreen({super.key, required this.name});
 
   @override
-  State<StatefulWidget> createState() => _ConfigEditPageState();
+  State<StatefulWidget> createState() => _ConfigEditScreenState();
 }
 
-class _ConfigEditPageState extends State<ConfigEditPage> {
+class _ConfigEditScreenState extends State<ConfigEditScreen> {
   final _controller = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();

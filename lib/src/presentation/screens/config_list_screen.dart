@@ -4,26 +4,26 @@ import 'package:boxy/slivers.dart';
 import 'package:flutter/material.dart';
 import 'package:local_config/src/common/extensions/map_extension.dart';
 import 'package:local_config/src/common/extensions/string_extension.dart';
-import 'package:local_config/src/domain/repository/local_config_repository.dart';
-import 'package:local_config/src/local_config_internal.dart';
+import 'package:local_config/src/domain/repositories/local_config_repository.dart';
+import 'package:local_config/src/local_config_internals.dart';
 import 'package:local_config/src/presentation/l10n/generated/local_config_localizations.dart';
 import 'package:local_config/src/presentation/local_config_routes.dart';
 import 'package:local_config/src/presentation/local_config_theme.dart';
 import 'package:local_config/src/presentation/extensions/config_display_extension.dart';
-import 'package:local_config/src/presentation/widget/callout.dart';
-import 'package:local_config/src/domain/entity/local_config_value.dart';
-import 'package:local_config/src/presentation/widget/extended_list_tile.dart';
-import 'package:local_config/src/presentation/widget/clearable_search_bar.dart';
-import 'package:local_config/src/presentation/widget/root_aware_sliver_app_bar.dart';
+import 'package:local_config/src/presentation/widgets/callout.dart';
+import 'package:local_config/src/domain/entities/local_config_value.dart';
+import 'package:local_config/src/presentation/widgets/extended_list_tile.dart';
+import 'package:local_config/src/presentation/widgets/clearable_search_bar.dart';
+import 'package:local_config/src/presentation/widgets/root_aware_sliver_app_bar.dart';
 
-class ConfigListPage extends StatefulWidget {
-  const ConfigListPage({super.key});
+class ConfigListScreen extends StatefulWidget {
+  const ConfigListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ConfigListPageState();
+  State<StatefulWidget> createState() => _ConfigListScreenState();
 }
 
-class _ConfigListPageState extends State<ConfigListPage> {
+class _ConfigListScreenState extends State<ConfigListScreen> {
   static const _backToTopScrollOffsetThreshould = 600.0;
 
   final _focusNode = FocusNode();

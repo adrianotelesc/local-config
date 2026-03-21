@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:local_config/src/presentation/l10n/generated/local_config_localizations.dart';
 import 'package:local_config/src/presentation/local_config_routes.dart';
-import 'package:local_config/src/presentation/page/config_edit_page.dart';
-import 'package:local_config/src/presentation/page/config_list_page.dart';
+import 'package:local_config/src/presentation/screens/config_edit_screen.dart';
+import 'package:local_config/src/presentation/screens/config_list_screen.dart';
 import 'package:local_config/src/presentation/local_config_theme.dart';
 
 /// The entry point widget for Local Config UI.
@@ -28,12 +28,13 @@ class LocalConfigEntrypoint extends StatelessWidget {
           onGenerateRoute: (settings) {
             return switch (settings.name) {
               LocalConfigRoutes.configList => MaterialPageRoute(
-                builder: (_) => const ConfigListPage(),
+                builder: (_) => const ConfigListScreen(),
               ),
               LocalConfigRoutes.configEdit => MaterialPageRoute(
                 fullscreenDialog: true,
                 builder:
-                    (_) => ConfigEditPage(name: settings.arguments.toString()),
+                    (_) =>
+                        ConfigEditScreen(name: settings.arguments.toString()),
               ),
               _ => null,
             };

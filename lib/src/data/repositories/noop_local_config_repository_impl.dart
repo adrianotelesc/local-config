@@ -1,6 +1,6 @@
-import 'package:local_config/src/domain/entity/local_config_update.dart';
-import 'package:local_config/src/domain/entity/local_config_value.dart';
-import 'package:local_config/src/domain/repository/local_config_repository.dart';
+import 'package:local_config/src/domain/entities/local_config_update.dart';
+import 'package:local_config/src/domain/entities/local_config_value.dart';
+import 'package:local_config/src/domain/repositories/local_config_repository.dart';
 
 class NoopLocalConfigRepositoryImpl implements LocalConfigRepository {
   @override

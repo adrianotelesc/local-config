@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:local_config/src/presentation/widget/text_editor/controller/text_editor_controller.dart';
+import 'package:local_config/src/presentation/widgets/text_editor/controller/text_editor_controller.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:re_highlight/languages/json.dart';
 import 'package:re_highlight/styles/atom-one-dark.dart';

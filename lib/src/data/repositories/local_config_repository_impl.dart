@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:local_config/src/common/extensions/map_extension.dart';
 import 'package:local_config/src/core/persistence/key_value_storage.dart';
-import 'package:local_config/src/domain/entity/local_config_update.dart';
-import 'package:local_config/src/domain/entity/local_config_value.dart';
-import 'package:local_config/src/domain/repository/local_config_repository.dart';
+import 'package:local_config/src/domain/entities/local_config_update.dart';
+import 'package:local_config/src/domain/entities/local_config_value.dart';
+import 'package:local_config/src/domain/repositories/local_config_repository.dart';
 
 class LocalConfigRepositoryImpl implements LocalConfigRepository {
   final Map<String, LocalConfigValue> _all = {};

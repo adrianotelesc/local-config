@@ -1,5 +1,5 @@
-import 'package:local_config/src/domain/entity/local_config_update.dart';
-import 'package:local_config/src/domain/entity/local_config_value.dart';
+import 'package:local_config/src/domain/entities/local_config_update.dart';
+import 'package:local_config/src/domain/entities/local_config_value.dart';
 
 abstract class LocalConfigRepository {
   Map<String, LocalConfigValue> get all;
