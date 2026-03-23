@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:local_config/src/domain/entities/local_config_value.dart';
-import 'package:local_config/src/domain/repositories/local_config_repository.dart';
 import 'package:local_config/src/local_config_internals.dart';
 import 'package:local_config/src/presentation/extensions/config_display_extension.dart';
 import 'package:local_config/src/presentation/l10n/generated/local_config_localizations.dart';
 import 'package:local_config/src/presentation/local_config_theme.dart';
+import 'package:local_config/src/presentation/notifiers/config_listing_notifier.dart';
 import 'package:local_config/src/presentation/widgets/input_form_field.dart';
 import 'package:local_config/src/presentation/widgets/root_aware_sliver_app_bar.dart';
 import 'package:local_config/src/presentation/widgets/text_editor/text_editor.dart';
 
-class ConfigEditScreen extends StatefulWidget {
-  const ConfigEditScreen({super.key, required this.name});
+class ConfigEditingScreen extends StatefulWidget {
+  const ConfigEditingScreen({super.key, required this.name});
 
   final String name;
 
   @override
-  State<StatefulWidget> createState() => _ConfigEditScreenState();
+  State<StatefulWidget> createState() => _ConfigEditingScreenState();
 }
 
-class _ConfigEditScreenState extends State<ConfigEditScreen> {
-  final _configRepo = configRepository;
-
+class _ConfigEditingScreenState extends State<ConfigEditingScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _textController = TextEditingController();
+
+  final _configNotifier = ConfigListingNotifier(configRepo: configRepository);
 
   late LocalConfigValue _configValue;
 
   @override
   void initState() {
     super.initState();
-    _configValue = _configRepo.configs[widget.name]!;
+    _configValue = _configNotifier.get(widget.name)!;
     _textController.text = _configValue.asString;
   }
 
@@ -47,35 +47,32 @@ class _ConfigEditScreenState extends State<ConfigEditScreen> {
       body: CustomScrollView(
         slivers: [
           _AppBar(
-            formKey: _formKey,
-            name: widget.name,
-            textController: _textController,
-            configRepo: _configRepo,
+            onSaveButtonPressed: () => _submit(_textController.text),
           ),
           _Form(
             formKey: _formKey,
+            fieldTextController: _textController,
             name: widget.name,
-            textController: _textController,
-            configRepo: _configRepo,
             configValue: _configValue,
+            onSubmitted: _submit,
           ),
         ],
       ),
     );
   }
+
+  void _submit(String value) {
+    if (_formKey.currentState?.validate() == false) return;
+    _configNotifier.set(widget.name, value);
+    Navigator.of(context).pop();
+  }
 }
 
 class _AppBar extends StatelessWidget {
-  final LocalConfigRepository configRepo;
-  final GlobalKey<FormState> formKey;
-  final TextEditingController textController;
-  final String name;
+  final Function()? onSaveButtonPressed;
 
   const _AppBar({
-    required this.configRepo,
-    required this.formKey,
-    required this.textController,
-    required this.name,
+    this.onSaveButtonPressed,
   });
 
   @override
@@ -86,11 +83,7 @@ class _AppBar extends StatelessWidget {
       actionsPadding: const EdgeInsets.all(8),
       actions: [
         TextButton(
-          onPressed: () {
-            if (formKey.currentState?.validate() == false) return;
-            configRepo.set(name, textController.text);
-            Navigator.of(context).pop();
-          },
+          onPressed: onSaveButtonPressed,
           child: Text(LocalConfigLocalizations.of(context)!.save),
         ),
       ],
@@ -101,18 +94,18 @@ class _AppBar extends StatelessWidget {
 }
 
 class _Form extends StatelessWidget {
-  final LocalConfigRepository configRepo;
   final GlobalKey<FormState> formKey;
-  final TextEditingController textController;
+  final TextEditingController fieldTextController;
   final String name;
   final LocalConfigValue configValue;
+  final Function(String)? onSubmitted;
 
   const _Form({
-    required this.configRepo,
     required this.formKey,
-    required this.textController,
+    required this.fieldTextController,
     required this.name,
     required this.configValue,
+    this.onSubmitted,
   });
 
   @override
@@ -170,17 +163,13 @@ class _Form extends StatelessWidget {
                 ),
               ),
               InputFormField(
-                controller: textController,
+                controller: fieldTextController,
                 entries:
                     configValue.type.presets.map((item) {
                       return DropdownMenuEntry(value: item, label: item);
                     }).toList(),
                 autofocus: true,
-                onFieldSubmitted: (_) {
-                  if (formKey.currentState?.validate() == false) return;
-                  configRepo.set(name, textController.text);
-                  Navigator.of(context).pop();
-                },
+                onFieldSubmitted: onSubmitted,
                 validator:
                     (value) => configValue.type.validator(context, value ?? ''),
                 textInputAction: TextInputAction.done,
@@ -195,7 +184,7 @@ class _Form extends StatelessWidget {
                                 fullscreenDialog: true,
                                 builder: (_) {
                                   return TextEditor(
-                                    value: textController.text,
+                                    value: fieldTextController.text,
                                     title: LocalConfigLocalizations.of(
                                       context,
                                     )!.editorOf(
@@ -207,7 +196,7 @@ class _Form extends StatelessWidget {
                                 },
                               ),
                             );
-                            textController.text = changedText ?? '';
+                            fieldTextController.text = changedText ?? '';
                           },
                           icon: const Icon(Icons.open_in_full),
                           tooltip:

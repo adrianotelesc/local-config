@@ -76,6 +76,10 @@ class ConfigListingNotifier extends ChangeNotifier {
         return "${entry.key} ${entry.value}".containsInsensitive(term);
       });
 
+  LocalConfigValue? get(String key) => _configRepo.get(key);
+
+  Future<void> set(String key, String value) => _configRepo.set(key, value);
+
   Future<void> reset(String key) => _configRepo.reset(key);
 
   Future<void> resetAll() => _configRepo.resetAll();
