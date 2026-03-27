@@ -94,7 +94,6 @@ void main() async {
       ),
     ),
   );
-
   await LocalConfig.instance.setDefaults(
     FirebaseRemoteConfig.instance.getAll().map(
       (key, value) => MapEntry(key, value.asString()),
