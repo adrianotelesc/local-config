@@ -44,27 +44,32 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await LocalConfig.instance.initialize(
-    params: {
-      'social_login_enabled': false,
-      'timeout_ms': 8000,
-      'animation_speed': 1.25,
-      'api_base_url': 'https://api.myapp.com/v1',
-      "checkout": {
-        "payment_methods": {
-          "allowed": ["credit_card", "pix", "boleto"],
-          "default": "credit_card",
-        },
-        "installments": {
-          "enabled": false,
-          "rules": [
-            {"max_installments": 3, "min_order_value": 0},
-            {"max_installments": 6, "min_order_value": 100},
-            {"max_installments": 10, "min_order_value": 300},
-          ],
-        },
+    configSettings: LocalConfigSettings(
+      keyValueStorage: SharedPreferencesKeyValueStorage(
+        sharedPreferences: SharedPreferencesAsync(),
+      ),
+    ),
+  );
+  await LocalConfig.instance.setDefaults({
+    'social_login_enabled': false,
+    'timeout_ms': 8000,
+    'animation_speed': 1.25,
+    'api_base_url': 'https://api.myapp.com/v1',
+    "checkout": {
+      "payment_methods": {
+        "allowed": ["credit_card", "pix", "boleto"],
+        "default": "credit_card",
+      },
+      "installments": {
+        "enabled": false,
+        "rules": [
+          {"max_installments": 3, "min_order_value": 0},
+          {"max_installments": 6, "min_order_value": 100},
+          {"max_installments": 10, "min_order_value": 300},
+        ],
       },
     },
-  );
+  });
 
   runApp(const ExampleApp());
 }
@@ -83,7 +88,15 @@ void main() async {
   await FirebaseRemoteConfig.instance.fetchAndActivate();
 
   await LocalConfig.instance.initialize(
-    params: FirebaseRemoteConfig.instance.getAll().map(
+    configSettings: LocalConfigSettings(
+      keyValueStorage: SharedPreferencesKeyValueStorage(
+        sharedPreferences: SharedPreferencesAsync(),
+      ),
+    ),
+  );
+
+  await LocalConfig.instance.setDefaults(
+    FirebaseRemoteConfig.instance.getAll().map(
       (key, value) => MapEntry(key, value.asString()),
     ),
   );
