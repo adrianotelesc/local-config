@@ -76,8 +76,8 @@ enum LocalConfigType {
   json;
 
   static LocalConfigType infer(String source) {
-    if (tryParseBool(source) != null) return LocalConfigType.boolean;
     if (num.tryParse(source) != null) return LocalConfigType.number;
+    if (tryParseBool(source) != null) return LocalConfigType.boolean;
     if (tryJsonDecode(source) != null) return LocalConfigType.json;
     return LocalConfigType.string;
   }
