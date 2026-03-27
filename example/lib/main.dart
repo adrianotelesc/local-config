@@ -81,7 +81,7 @@ class _ConfigListViewState extends State<_ConfigListView> {
     super.initState();
     _configEntries = LocalConfig.instance.all.entries.toList();
 
-    _configUpdateSub = LocalConfig.instance.onConfigUpdated.listen((configs) {
+    _configUpdateSub = LocalConfig.instance.onConfigUpdated.listen((_) {
       setState(
         () => _configEntries = LocalConfig.instance.all.entries.toList(),
       );

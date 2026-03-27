@@ -135,8 +135,8 @@ final checkout = LocalConfig.instance.getString('checkout');
 #### Or listen for updates (if your implementation supports it)
 
 ```dart
-LocalConfig.instance.onConfigUpdated.listen((configs) {
-  print('Configs updated: $configs');
+LocalConfig.instance.onConfigUpdated.listen((event) {
+  print('Updated keys: ${event.updatedKeys}}');
 });
 ```
 
