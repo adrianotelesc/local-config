@@ -3,6 +3,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:local_config/src/common/extensions/string_extension.dart';
+import 'package:local_config/src/domain/entities/local_config_update.dart';
 import 'package:local_config/src/domain/repositories/local_config_repository.dart';
 import 'package:local_config/src/presentation/models/config_value.dart';
 
@@ -10,11 +11,8 @@ class ConfigNotifier extends ChangeNotifier {
   ConfigNotifier({
     required LocalConfigRepository configRepo,
   }) : _configRepo = configRepo {
-    refresh();
-    _configUpdateSub = _configRepo.onConfigUpdated.listen((update) {
-      if (update.updatedKeys.isEmpty) return;
-      refresh();
-    });
+    _load();
+    _configUpdateSub = _configRepo.onConfigUpdated.listen(_update);
   }
 
   final LocalConfigRepository _configRepo;
@@ -54,7 +52,17 @@ class ConfigNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refresh() {
+  void _update(LocalConfigUpdate configUpdate) {
+    for (final key in configUpdate.updatedKeys) {
+      _all.update(key, (configValue) {
+        return configValue.copyWith(overrideValue: _configRepo.locals[key]);
+      });
+    }
+    _applyFilters();
+    notifyListeners();
+  }
+
+  void _load() {
     _all = _configRepo.defaults.map((key, value) {
       return MapEntry(
         key,

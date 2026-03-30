@@ -107,15 +107,6 @@ void main() {
   });
 
   group('listeners', () {
-    test('should notify listeners on refresh', () async {
-      var notified = false;
-      notifier.addListener(() => notified = true);
-
-      notifier.refresh();
-
-      expect(notified, isTrue);
-    });
-
     test('should notify listeners on query change', () {
       var notified = false;
       notifier.addListener(() => notified = true);

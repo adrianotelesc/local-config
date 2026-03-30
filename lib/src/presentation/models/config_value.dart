@@ -42,7 +42,7 @@ final class ConfigValue {
     return ConfigValue(
       type: type,
       defaultValue: defaultValue,
-      overrideValue: overrideValue ?? this.overrideValue,
+      overrideValue: overrideValue,
     );
   }
 

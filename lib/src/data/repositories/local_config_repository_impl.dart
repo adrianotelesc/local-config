@@ -85,25 +85,11 @@ class LocalConfigRepositoryImpl implements LocalConfigRepository {
       await _storage.remove(key);
     }
 
-    // _configs.update(key, (configValue) {
-    //   return configValue.copyWith(
-    //     value: value,
-    //     source: source,
-    //   );
-    // });
-
     _controller.add(LocalConfigUpdate({key}));
   }
 
   @override
   Future<void> reset(String key) async {
-    // _configs.update(key, (configValue) {
-    //   return configValue.copyWith(
-    //     value: _defaults[key],
-    //     source: ValueSource.valueDefault,
-    //   );
-    // });
-
     _locals.remove(key);
     await _storage.remove(key);
 
@@ -112,13 +98,6 @@ class LocalConfigRepositoryImpl implements LocalConfigRepository {
 
   @override
   Future<void> resetAll() async {
-    // _configs.updateAll((key, configValue) {
-    //   return configValue.copyWith(
-    //     value: _defaults[key],
-    //     source: ValueSource.valueDefault,
-    //   );
-    // });
-
     final updatedKeys = _locals.keys.toSet();
     _locals.clear();
     await _storage.clear();
