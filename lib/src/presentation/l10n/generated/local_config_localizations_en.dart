@@ -42,7 +42,10 @@ class LocalConfigLocalizationsEn extends LocalConfigLocalizations {
   String get dataType => 'Data type';
 
   @override
-  String get value => 'Value';
+  String get defaultValue => 'Default value';
+
+  @override
+  String get localValue => 'Local value';
 
   @override
   String get close => 'Close';

@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:boxy/slivers.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:local_config/src/local_config.dart';
 import 'package:local_config/src/local_config_internals.dart';
@@ -10,6 +13,7 @@ import 'package:local_config/src/presentation/notifiers/config_notifier.dart';
 import 'package:local_config/src/presentation/widgets/back_to_top_fab.dart';
 import 'package:local_config/src/presentation/widgets/callout.dart';
 import 'package:local_config/src/presentation/widgets/clearable_search_bar.dart';
+import 'package:local_config/src/presentation/widgets/dashed_l_connector.dart';
 import 'package:local_config/src/presentation/widgets/extended_list_tile.dart';
 import 'package:local_config/src/presentation/widgets/root_aware_sliver_app_bar.dart';
 
@@ -214,57 +218,151 @@ class _List extends StatelessWidget {
                   final hasOverride = config.hasOverride;
 
                   return ExtendedListTile(
-                    leading: Icon(config.type.displayIcon),
                     style:
                         hasOverride
                             ? warningExtendedListTileStyle(context) //
                             : null,
-                    title: Text.rich(
-                      highlightTerms(
-                        text: name,
-                        terms: terms,
-                        normalStyle: context.extendedTextTheme.codeBodyMedium
-                            ?.copyWith(
-                              fontWeight: hasOverride ? FontWeight.bold : null,
+                    title: Row(
+                      spacing: 8,
+                      children: [
+                        Icon(config.type.displayIcon),
+                        Expanded(
+                          child: Text.rich(
+                            highlightTerms(
+                              text: name,
+                              terms: terms,
+                              normalStyle: context
+                                  .extendedTextTheme
+                                  .codeBodyMedium
+                                  ?.copyWith(
+                                    fontWeight:
+                                        hasOverride ? FontWeight.bold : null,
+                                  ),
+                              highlightStyle: context
+                                  .extendedTextTheme
+                                  .codeBodyMedium
+                                  ?.copyWith(
+                                    fontWeight:
+                                        hasOverride ? FontWeight.bold : null,
+                                    backgroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withAlpha(102),
+                                  ),
                             ),
-                        highlightStyle: context.extendedTextTheme.codeBodyMedium
-                            ?.copyWith(
-                              fontWeight: hasOverride ? FontWeight.bold : null,
-                              backgroundColor: Theme.of(
-                                context,
-                              ).colorScheme.primary.withAlpha(102),
-                            ),
-                      ),
-                      style: context.extendedTextTheme.codeBodyMedium?.copyWith(
-                        fontWeight: hasOverride ? FontWeight.bold : null,
-                      ),
+                            style: context.extendedTextTheme.codeBodyMedium
+                                ?.copyWith(
+                                  fontWeight:
+                                      hasOverride ? FontWeight.bold : null,
+                                ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(
+                              LocalConfigRoutes.configEdit,
+                              arguments: name,
+                            );
+                          },
+                          icon: const Icon(Icons.edit),
+                          tooltip: LocalConfigLocalizations.of(context)!.edit,
+                        ),
+                      ],
                     ),
-                    subtitle: Text.rich(
-                      highlightTerms(
-                        text: config.getDisplayText(context),
-                        terms: terms,
-                        normalStyle: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: hasOverride ? FontWeight.bold : null,
+                    subtitle: DashedLConnector(
+                      entries: [
+                        if (config.hasOverride)
+                          DashedLEntry(
+                            label: Chip(
+                              label: Text(
+                                'Local value',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
+                                  fontWeight:
+                                      hasOverride ? FontWeight.bold : null,
+                                ),
+                              ),
+                              side: BorderSide(
+                                width: 0,
+                                color: Colors.transparent,
+                              ),
+                              color: WidgetStatePropertyAll(
+                                [
+                                  Colors.red,
+                                  Colors.yellow,
+                                  Colors.orange,
+                                  Colors.green,
+                                  Colors.blue,
+                                ].shuffled(Random()).first.withAlpha(80),
+                              ),
+                            ),
+                            value: Text.rich(
+                              highlightTerms(
+                                text: config.getDisplayText(context),
+                                terms: terms,
+                                normalStyle: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
+                                  fontWeight:
+                                      hasOverride ? FontWeight.bold : null,
+                                ),
+                                highlightStyle: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight:
+                                      hasOverride ? FontWeight.bold : null,
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withAlpha(102),
+                                ),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight:
+                                    hasOverride ? FontWeight.bold : null,
+                              ),
+                            ),
+                          ),
+                        DashedLEntry(
+                          label: Text(
+                            'Default value',
+                            style:
+                                Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium,
+                          ),
+                          value: Text.rich(
+                            highlightTerms(
+                              text: config.defaultValue,
+                              terms: terms,
+                              normalStyle:
+                                  Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(),
+                              highlightStyle: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withAlpha(102),
+                              ),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
                         ),
-                        highlightStyle: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: hasOverride ? FontWeight.bold : null,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primary.withAlpha(102),
-                        ),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: hasOverride ? FontWeight.bold : null,
-                      ),
+                      ],
                     ),
                     top:
                         hasOverride
@@ -284,16 +382,6 @@ class _List extends StatelessWidget {
                               ),
                             )
                             : null,
-                    trailing: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(
-                          LocalConfigRoutes.configEdit,
-                          arguments: name,
-                        );
-                      },
-                      icon: const Icon(Icons.edit),
-                      tooltip: LocalConfigLocalizations.of(context)!.edit,
-                    ),
                   );
                 },
               ),

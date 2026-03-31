@@ -167,11 +167,17 @@ abstract class LocalConfigLocalizations {
   /// **'Data type'**
   String get dataType;
 
-  /// No description provided for @value.
+  /// No description provided for @defaultValue.
   ///
   /// In en, this message translates to:
-  /// **'Value'**
-  String get value;
+  /// **'Default value'**
+  String get defaultValue;
+
+  /// No description provided for @localValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Local value'**
+  String get localValue;
 
   /// No description provided for @close.
   ///

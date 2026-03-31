@@ -42,7 +42,10 @@ class LocalConfigLocalizationsPt extends LocalConfigLocalizations {
   String get dataType => 'Tipo de dado';
 
   @override
-  String get value => 'Valor';
+  String get defaultValue => 'Valor padrão';
+
+  @override
+  String get localValue => 'Valor local';
 
   @override
   String get close => 'Fechar';

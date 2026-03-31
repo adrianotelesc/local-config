@@ -100,6 +100,11 @@ abstract final class LocalConfigTheme {
         borderRadius: BorderRadius.circular(16),
       ),
     ),
+    chipTheme: ChipThemeData(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(32),
+      ),
+    ),
     extensions: [
       ExtendedColorScheme(
         warning: Color(0XFFFFB300),
@@ -243,10 +248,11 @@ ExtendedListTileStyle warningExtendedListTileStyle(BuildContext context) {
   assert(colorScheme != null, 'ExtendedColorScheme must be available in theme');
   return ExtendedListTileStyle(
     tileColor: colorScheme?.warningContainer,
-    titleTextStyle: TextTheme.of(context) //
-    .bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-    subtitleTextStyle: TextTheme.of(context) //
-    .bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+    titleTextStyle: context.extendedTextTheme.codeBodyMedium,
+    // titleTextStyle: TextTheme.of(context) //
+    // .bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+    // subtitleTextStyle: TextTheme.of(context) //
+    // .bodyMedium?.copyWith(fontWeight: FontWeight.bold),
   );
 }
 

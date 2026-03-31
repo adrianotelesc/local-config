@@ -30,7 +30,7 @@ class _ConfigEditingScreenState extends State<ConfigEditingScreen> {
   void initState() {
     super.initState();
     _configValue = _configNotifier.get(widget.name)!;
-    _textController.text = _configValue.effectiveValue;
+    _textController.text = _configValue.overrideValue ?? '';
   }
 
   @override
@@ -162,6 +162,61 @@ class _Form extends StatelessWidget {
                 ),
               ),
               InputFormField(
+                controller: TextEditingController(
+                  text: configValue.defaultValue,
+                ),
+                entries:
+                    configValue.type.allowedValues.map((item) {
+                      return DropdownMenuEntry(value: item, label: item);
+                    }).toList(),
+                enabled: false,
+                onFieldSubmitted: onSubmitted,
+                validator:
+                    (value) => configValue.type.validator(context, value ?? ''),
+                textInputAction: TextInputAction.done,
+                suffixIcon:
+                    configValue.type.isTextBased
+                        ? IconButton(
+                          onPressed: () async {
+                            final changedText = await Navigator.of(
+                              context,
+                            ).push(
+                              MaterialPageRoute<String>(
+                                fullscreenDialog: true,
+                                builder: (_) {
+                                  return TextEditor(
+                                    value: fieldTextController.text,
+                                    title: LocalConfigLocalizations.of(
+                                      context,
+                                    )!.editorOf(
+                                      configValue.type.getDisplayName(context),
+                                    ),
+                                    controller:
+                                        configValue.type.textEditorController,
+                                  );
+                                },
+                              ),
+                            );
+                            fieldTextController.text = changedText ?? '';
+                          },
+                          icon: const Icon(Icons.open_in_full),
+                          tooltip:
+                              LocalConfigLocalizations.of(
+                                context,
+                              )!.fullScreenEditor,
+                        )
+                        : null,
+                label: Text(
+                  LocalConfigLocalizations.of(context)!.defaultValue,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+              // OutlinedButton.icon(
+              //   label: Text('Local value'),
+              //   icon: Icon(Icons.add_circle_outline),
+              //   onPressed: () {},
+              // ),
+              InputFormField(
                 controller: fieldTextController,
                 entries:
                     configValue.type.allowedValues.map((item) {
@@ -205,7 +260,7 @@ class _Form extends StatelessWidget {
                         )
                         : null,
                 label: Text(
-                  LocalConfigLocalizations.of(context)!.value,
+                  LocalConfigLocalizations.of(context)!.localValue,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
