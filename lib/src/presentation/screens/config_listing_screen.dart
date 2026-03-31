@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:boxy/slivers.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:local_config/src/local_config.dart';
 import 'package:local_config/src/local_config_internals.dart';
