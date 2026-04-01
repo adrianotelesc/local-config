@@ -4,7 +4,6 @@ import 'package:local_config/src/presentation/l10n/generated/local_config_locali
 import 'package:local_config/src/presentation/local_config_theme.dart';
 import 'package:local_config/src/presentation/models/config_value.dart';
 import 'package:local_config/src/presentation/notifiers/config_editing_notifier.dart';
-import 'package:local_config/src/presentation/notifiers/config_notifier.dart';
 import 'package:local_config/src/presentation/widgets/dashed_l_connector.dart';
 import 'package:local_config/src/presentation/widgets/input_form_field.dart';
 import 'package:local_config/src/presentation/widgets/root_aware_sliver_app_bar.dart';

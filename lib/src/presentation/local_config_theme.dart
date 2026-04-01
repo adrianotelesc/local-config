@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:local_config/src/presentation/widgets/extended_list_tile.dart';
 
 abstract final class LocalConfigTheme {
   static ColorScheme get _colorScheme => ColorScheme.fromSeed(
