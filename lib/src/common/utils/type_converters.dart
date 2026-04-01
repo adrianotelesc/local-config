@@ -49,7 +49,7 @@ String? tryJsonEncode(Object object) {
   }
 }
 
-dynamic parseValue(String value) {
+dynamic parse(String value) {
   final boolean = bool.tryParse(value);
   if (boolean != null) return boolean;
 

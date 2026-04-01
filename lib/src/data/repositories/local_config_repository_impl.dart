@@ -44,12 +44,15 @@ class LocalConfigRepositoryImpl implements LocalConfigRepository {
     _defaults = defaults;
     final locals = await _storage.all;
 
-    final retainedLocals = locals.where((key, value) {
+    final retainedLocals = locals.where((key, localValue) {
       final defaultValue = defaults[key];
       if (defaultValue == null) return false;
 
-      return defaultValue != value &&
-          parseValue(defaultValue).runtimeType == parseValue(value).runtimeType;
+      final parsedDefault = parse(defaultValue);
+      final parsedLocal = parse(localValue);
+
+      return parsedDefault.runtimeType == parsedLocal.runtimeType &&
+          parsedDefault != parsedLocal;
     });
 
     await _storage.prune(retainedLocals.keys.toSet());
