@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:local_config/src/presentation/l10n/generated/local_config_localizations.dart';
 import 'package:local_config/src/presentation/widgets/text_editor/controller/text_editor_controller.dart';
 import 'package:re_editor/re_editor.dart';
 
@@ -109,14 +110,14 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
       title: Text(title),
       leading: IconButton(
-        tooltip: 'Close',
+        tooltip: LocalConfigLocalizations.of(context)!.close,
         onPressed: onCloseClick,
         icon: const Icon(Icons.close),
       ),
       actions: [
         if (showSaveAction)
           IconButton(
-            tooltip: 'Save',
+            tooltip: LocalConfigLocalizations.of(context)!.save,
             onPressed: onSaveClick,
             icon: const Icon(Icons.check),
           ),
@@ -161,7 +162,9 @@ class _FormattingBar extends StatelessWidget {
           Icon(isValid ? Icons.check_circle : Icons.error, color: primaryColor),
           const SizedBox.square(dimension: 8),
           Text(
-            isValid ? 'Valid JSON' : 'Invalid JSON',
+            isValid
+                ? LocalConfigLocalizations.of(context)!.validJson
+                : LocalConfigLocalizations.of(context)!.invalidJson,
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: primaryColor),
@@ -172,7 +175,10 @@ class _FormattingBar extends StatelessWidget {
             style: ButtonStyle(
               foregroundColor: WidgetStatePropertyAll(actionColor),
             ),
-            child: isValid ? const Text('Format') : const SizedBox.shrink(),
+            child:
+                isValid
+                    ? Text(LocalConfigLocalizations.of(context)!.format)
+                    : const SizedBox.shrink(),
           ),
         ],
       ),

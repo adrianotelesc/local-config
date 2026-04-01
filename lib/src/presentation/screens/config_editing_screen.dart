@@ -340,7 +340,7 @@ class _Form extends StatelessWidget {
               ),
               if (!showEditingLocalValue)
                 OutlinedButton.icon(
-                  label: Text('Local value'),
+                  label: Text(LocalConfigLocalizations.of(context)!.localValue),
                   icon: Icon(Icons.add),
                   onPressed: () {
                     setShowEditingLocalValue?.call(true);

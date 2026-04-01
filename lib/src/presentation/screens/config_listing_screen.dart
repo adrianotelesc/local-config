@@ -310,7 +310,9 @@ class _List extends StatelessWidget {
                           DashedLEntry(
                             label: Chip(
                               label: Text(
-                                'Local value',
+                                LocalConfigLocalizations.of(
+                                  context,
+                                )!.localValue,
                                 style: TextTheme.of(
                                   context,
                                 ).bodyMedium?.copyWith(
@@ -336,7 +338,7 @@ class _List extends StatelessWidget {
                           ),
                         DashedLEntry(
                           label: Text(
-                            'Default value',
+                            LocalConfigLocalizations.of(context)!.defaultValue,
                             style: TextTheme.of(context).bodyMedium,
                           ),
                           value: HighlightText(
