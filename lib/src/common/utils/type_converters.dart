@@ -56,8 +56,5 @@ dynamic parse(String value) {
   final number = num.tryParse(value);
   if (number != null) return number;
 
-  final json = tryJsonDecode(value);
-  if (json != null) return json;
-
   return value;
 }
