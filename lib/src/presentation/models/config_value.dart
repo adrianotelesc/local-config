@@ -16,10 +16,7 @@ final class ConfigValue {
   ConfigValue({
     required this.defaultValue,
     required this.localValue,
-  }) : assert(
-         localValue == null ||
-             parse(defaultValue).runtimeType == parse(localValue).runtimeType,
-       );
+  });
 
   String get effectiveValue => localValue ?? defaultValue;
 
@@ -68,7 +65,10 @@ enum ConfigValueType {
   static ConfigValueType fromValue(final String value) {
     if (bool.tryParse(value) != null) return ConfigValueType.boolean;
     if (num.tryParse(value) != null) return ConfigValueType.number;
-    if (tryJsonDecode(value) != null) return ConfigValueType.json;
+    if (RegExp(r'^\{.*\}|\[.*\]$').hasMatch(value) &&
+        tryJsonDecode(value) != null) {
+      return ConfigValueType.json;
+    }
     return ConfigValueType.string;
   }
 
