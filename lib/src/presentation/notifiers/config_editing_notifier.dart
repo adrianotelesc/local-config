@@ -42,7 +42,6 @@ class ConfigEditingNotifier extends ChangeNotifier {
     final localValue = _configRepo.locals[name];
 
     _configValue = ConfigValue(
-      type: ConfigValueType.fromValue(defaultValue),
       defaultValue: defaultValue,
       localValue: localValue,
     );

@@ -7,23 +7,18 @@ import 'package:local_config/src/presentation/widgets/text_editor/controller/str
 import 'package:local_config/src/presentation/widgets/text_editor/controller/text_editor_controller.dart';
 
 final class ConfigValue {
-  final ConfigValueType type;
-
   final String defaultValue;
 
   final String? localValue;
 
+  ConfigValueType get type => ConfigValueType.fromValue(effectiveValue);
+
   ConfigValue({
-    required this.type,
     required this.defaultValue,
     required this.localValue,
   }) : assert(
-         type == ConfigValueType.fromValue(defaultValue),
-         'value type must match the inferred type.',
-       ),
-       assert(
-         localValue == null || type == ConfigValueType.fromValue(localValue),
-         'value type must match the inferred type.',
+         localValue == null ||
+             parse(defaultValue).runtimeType == parse(localValue).runtimeType,
        );
 
   String get effectiveValue => localValue ?? defaultValue;
@@ -31,20 +26,19 @@ final class ConfigValue {
   bool get hasLocalValue => localValue != null && localValue != defaultValue;
 
   String getLocalDisplayText(final BuildContext context) {
-    return type == ConfigValueType.string && localValue?.isEmpty == true
+    return parse(localValue ?? '') is String && localValue?.isEmpty == true
         ? LocalConfigLocalizations.of(context)!.emptyString
         : localValue ?? '';
   }
 
   String getDefaultDisplayText(final BuildContext context) {
-    return type == ConfigValueType.string && defaultValue.isEmpty
+    return parse(defaultValue) is String && defaultValue.isEmpty
         ? LocalConfigLocalizations.of(context)!.emptyString
         : defaultValue;
   }
 
   ConfigValue copyWith({final String? overrideValue}) {
     return ConfigValue(
-      type: type,
       defaultValue: defaultValue,
       localValue: overrideValue,
     );
@@ -72,8 +66,8 @@ enum ConfigValueType {
   json;
 
   static ConfigValueType fromValue(final String value) {
+    if (bool.tryParse(value) != null) return ConfigValueType.boolean;
     if (num.tryParse(value) != null) return ConfigValueType.number;
-    if (tryParseBool(value) != null) return ConfigValueType.boolean;
     if (tryJsonDecode(value) != null) return ConfigValueType.json;
     return ConfigValueType.string;
   }

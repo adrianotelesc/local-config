@@ -293,11 +293,6 @@ class _Form extends StatelessWidget {
                             return DropdownMenuEntry(value: item, label: item);
                           }).toList(),
                       enabled: false,
-                      onFieldSubmitted: onSubmitted,
-                      validator:
-                          (value) =>
-                              configValue.type.validator(context, value ?? ''),
-                      textInputAction: TextInputAction.done,
                       suffixIcon:
                           configValue.type.isTextBased
                               ? IconButton(

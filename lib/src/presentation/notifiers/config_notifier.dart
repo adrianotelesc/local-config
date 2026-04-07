@@ -67,7 +67,6 @@ class ConfigNotifier extends ChangeNotifier {
       return MapEntry(
         key,
         ConfigValue(
-          type: ConfigValueType.fromValue(value),
           defaultValue: value,
           localValue: _configRepo.locals[key],
         ),
